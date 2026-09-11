@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create your CloudDesk account</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 460px;
+            background: white;
+            border-radius: 18px;
+            padding: 40px;
+
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08);
+
+            text-align: left;
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            border-radius: 16px;
+            background: #111827;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 25px;
+            color: #111827;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+            text-align: center;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #111827;
+        }
+
+        input[type="email"],
+        input[type="text"] {
+            width: 100%;
+            height: 46px;
+            padding: 0 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input[readonly] {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .email-badge {
+            margin-top: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #15803d;
+        }
+
+        .google-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 11px;
+        }
+
+        .error {
+            margin-top: 6px;
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .create-btn {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 10px;
+            background: #111827;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .create-btn:hover {
+            background: #1f2937;
+        }
+
+        .cancel {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .cancel:hover {
+            color: #111827;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">C</div>
+
+    <h1>Create your CloudDesk account</h1>
+    <p class="subtitle">
+        You're almost there. Tell us your name and choose a username.
+    </p>
+
+    {% if form.non_field_errors %}
+        <div class="error">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'socialaccount_signup' %}">
+        {% csrf_token %}
+
+        <div class="field">
+            <label for="{{ form.full_name.id_for_label }}">Full Name *</label>
+            {{ form.full_name }}
+            {% if form.full_name.errors %}
+                <div class="error">{{ form.full_name.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <label for="{{ form.email.id_for_label }}">Email</label>
+            {{ form.email }}
+            <div class="email-badge">
+                <span class="google-icon">G</span> Verified with Google
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="{{ form.username.id_for_label }}">Username *</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div class="error">{{ form.username.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="create-btn">
+            Create CloudDesk Account
+        </button>
+    </form>
+
+    <a href="{% url 'login' %}" class="cancel">
+        ← Back to CloudDesk Login
+    </a>
+
+</div>
+
+</body>
+</html>

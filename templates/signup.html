@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudDesk — Create Account</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(91, 141, 239, 0.16), transparent 30%),
+                radial-gradient(circle at 85% 80%, rgba(118, 88, 220, 0.13), transparent 30%),
+                #eef3ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            color: #172033;
+        }
+
+        /* MAIN CARD */
+
+        .auth-container {
+            width: 100%;
+            max-width: 1050px;
+            min-height: 620px;
+            display: flex;
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid rgba(255,255,255,.8);
+            border-radius: 26px;
+            box-shadow:
+                0 30px 80px rgba(35, 55, 100, .16),
+                0 8px 25px rgba(35, 55, 100, .07);
+        }
+
+        /* LEFT SIDE */
+
+        .auth-left {
+            width: 50%;
+            padding: 55px;
+            position: relative;
+            overflow: hidden;
+            color: white;
+            background:
+                radial-gradient(circle at 90% 5%, rgba(95,150,255,.28), transparent 28%),
+                linear-gradient(145deg, #08152f, #102f69 48%, #2458c7);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .auth-left::before {
+            content: "";
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 50%;
+            right: -140px;
+            top: -130px;
+        }
+
+        .auth-left::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border: 1px solid rgba(255,255,255,.06);
+            border-radius: 50%;
+            left: -130px;
+            bottom: -120px;
+        }
+
+        .left-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* BRAND */
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 27px;
+            font-weight: 800;
+            letter-spacing: -.8px;
+            margin-bottom: 18px;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #7eb6ff, #4d78ff);
+            box-shadow: 0 8px 20px rgba(50,100,230,.35);
+            font-size: 18px;
+        }
+
+        .brand span {
+            color: #7fb2ff;
+        }
+
+        .tagline {
+            max-width: 400px;
+            color: #c8d7f3;
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 38px;
+        }
+
+        .hero-title {
+            font-size: 37px;
+            line-height: 1.12;
+            letter-spacing: -1.4px;
+            margin-bottom: 16px;
+        }
+
+        .hero-title span {
+            color: #7db2ff;
+        }
+
+        /* CLOUD VISUAL */
+
+        .cloud-visual {
+            position: relative;
+            height: 210px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cloud-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(133,181,255,.25);
+        }
+
+        .circle-one {
+            width: 180px;
+            height: 180px;
+        }
+
+        .circle-two {
+            width: 125px;
+            height: 125px;
+        }
+
+        .cloud-core {
+            width: 130px;
+            height: 82px;
+            border-radius: 48px;
+            position: relative;
+            background: linear-gradient(145deg, #73a9ff, #3765d5);
+            box-shadow:
+                0 20px 45px rgba(0,0,0,.2),
+                inset 0 1px rgba(255,255,255,.35);
+        }
+
+        .cloud-core::before {
+            content: "";
+            position: absolute;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: #73a9ff;
+            top: -27px;
+            left: 28px;
+        }
+
+        .cloud-core::after {
+            content: "";
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #659cff;
+            top: -12px;
+            right: 10px;
+        }
+
+        .server-dot {
+            position: absolute;
+            z-index: 5;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #a9d0ff;
+            box-shadow: 0 0 15px #8bbaff;
+        }
+
+        .dot-one {
+            top: 20px;
+            left: 100px;
+        }
+
+        .dot-two {
+            right: 100px;
+            top: 80px;
+        }
+
+        .dot-three {
+            bottom: 22px;
+            left: 125px;
+        }
+
+        /* FEATURES */
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature {
+            padding: 13px;
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 12px;
+            background: rgba(255,255,255,.055);
+            backdrop-filter: blur(10px);
+        }
+
+        .feature strong {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .feature small {
+            color: #aec2e6;
+            font-size: 10px;
+        }
+
+        /* RIGHT SIDE */
+
+        .auth-right {
+            width: 50%;
+            padding: 52px 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #ffffff;
+        }
+
+        .auth-title {
+            font-size: 29px;
+            letter-spacing: -.8px;
+            margin-bottom: 7px;
+            color: #111827;
+        }
+
+        .auth-subtitle {
+            color: #7b8495;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        /* TABS */
+
+        .auth-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 4px;
+            background: #f2f4f8;
+            border-radius: 10px;
+            margin-bottom: 18px;
+        }
+
+        .auth-tabs a {
+            text-decoration: none;
+            text-align: center;
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #7b8495;
+            border-radius: 7px;
+        }
+
+        .auth-tabs a.active {
+            background: #ffffff;
+            color: #172033;
+            box-shadow: 0 2px 8px rgba(20,30,50,.08);
+        }
+
+        /* SOCIAL */
+
+        .social-buttons {
+            width: 100%;
+        }
+
+        .google-form {
+            width: 100%;
+            margin: 0;
+        }
+
+        .social-btn {
+            height: 43px;
+            border: 1px solid #dfe3ea;
+            border-radius: 9px;
+            background: white;
+            color: #263044;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .social-btn:hover {
+            border-color: #9eb4df;
+            background: #f8faff;
+            transform: translateY(-1px);
+        }
+
+        .social-icon {
+            margin-right: 7px;
+            font-size: 15px;
+        }
+
+        /* DIVIDER */
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #9aa2af;
+            font-size: 11px;
+            margin: 20px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e8ebf0;
+        }
+
+        /* FORM */
+
+        .form-row {
+            display: flex;
+            gap: 11px;
+        }
+
+        .form-group {
+            flex: 1;
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #394357;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 43px;
+            padding: 0 13px;
+            border: 1px solid #dce1e8;
+            border-radius: 9px;
+            outline: none;
+            background: #fbfcfe;
+            color: #1d2636;
+            font-size: 13px;
+            transition: .2s;
+        }
+
+        .form-control:focus {
+            background: white;
+            border-color: #4675dc;
+            box-shadow: 0 0 0 4px rgba(70,117,220,.10);
+        }
+
+        /* PASSWORD */
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper .form-control {
+            padding-right: 42px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: #8d96a5;
+            font-size: 14px;
+        }
+
+        .password-rules {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+            color: #9aa2af;
+            font-size: 9px;
+        }
+
+        /* TERMS */
+
+        .terms {
+            color: #7c8492;
+            font-size: 10px;
+            line-height: 1.5;
+            margin: 4px 0 15px;
+        }
+
+        .terms a {
+            color: #3d68c7;
+            text-decoration: none;
+        }
+
+        /* BUTTON */
+
+        .signup-btn {
+            width: 100%;
+            height: 45px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #3864c7, #2850b1);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(48,85,180,.20);
+            transition: .2s;
+        }
+
+        .signup-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 11px 25px rgba(48,85,180,.28);
+        }
+
+        .bottom-text {
+            text-align: center;
+            margin-top: 17px;
+            color: #8a92a0;
+            font-size: 11px;
+        }
+
+        .bottom-text a {
+            color: #315dbd;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 850px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .auth-container {
+                max-width: 520px;
+                flex-direction: column;
+            }
+
+            .auth-left,
+            .auth-right {
+                width: 100%;
+            }
+
+            .auth-left {
+                padding: 40px 35px;
+            }
+
+            .auth-right {
+                padding: 40px 35px;
+            }
+
+            .cloud-visual {
+                display: none;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .auth-left {
+                padding: 32px 25px;
+            }
+
+            .auth-right {
+                padding: 32px 22px;
+            }
+
+            .hero-title {
+                font-size: 30px;
+            }
+
+            .social-buttons,
+            .form-row {
+                grid-template-columns: 1fr;
+                display: grid;
+            }
+
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="auth-container">
+
+    <!-- ================= LEFT ================= -->
+
+    <section class="auth-left">
+
+        <div class="left-content">
+
+            <div class="brand">
+                <div class="brand-icon">☁</div>
+                Cloud<span>Desk</span>
+            </div>
+
+            <h2 class="hero-title">
+                Your cloud.<br>
+                <span>One intelligent desk.</span>
+            </h2>
+
+            <p class="tagline">
+                Monitor, manage and understand your cloud infrastructure
+                from one simple workspace.
+            </p>
+
+            <div class="cloud-visual">
+
+                <div class="cloud-circle circle-one"></div>
+                <div class="cloud-circle circle-two"></div>
+
+                <div class="server-dot dot-one"></div>
+                <div class="server-dot dot-two"></div>
+                <div class="server-dot dot-three"></div>
+
+                <div class="cloud-core"></div>
+
+            </div>
+
+        </div>
+
+        <div class="feature-list">
+
+            <div class="feature">
+                <strong>☁ Multi-cloud</strong>
+                <small>Manage multiple providers</small>
+            </div>
+
+            <div class="feature">
+                <strong>◉ Live monitoring</strong>
+                <small>See infrastructure health</small>
+            </div>
+
+            <div class="feature">
+                <strong>⚡ Fast insights</strong>
+                <small>Understand resources quickly</small>
+            </div>
+
+            <div class="feature">
+                <strong>🔒 Secure workspace</strong>
+                <small>Built for modern teams</small>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= RIGHT ================= -->
+
+    <section class="auth-right">
+
+        <h1 class="auth-title">
+            Create your account
+        </h1>
+
+        <p class="auth-subtitle">
+            Start managing your cloud environment with CloudDesk.
+        </p>
+
+
+        <!-- TABS -->
+
+        <div class="auth-tabs">
+
+            <a href="{% url 'signup' %}" class="active">
+                Sign up
+            </a>
+
+            <a href="{% url 'login' %}">
+                Sign in
+            </a>
+
+        </div>
+
+
+        <!-- GOOGLE LOGIN -->
+
+        <div class="social-buttons">
+
+            <form
+                method="POST"
+                action="/accounts/google/login/"
+                class="google-form"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="social-btn"
+                    style="width:100%;"
+                >
+                    <span class="social-icon">G</span>
+                    Continue with Google
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <div class="divider">
+            or continue with email
+        </div>
+
+
+        <!-- SIGNUP FORM -->
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="first_name">
+                        First name
+                    </label>
+
+                    <input
+                        id="first_name"
+                        type="text"
+                        name="first_name"
+                        class="form-control"
+                        placeholder="John"
+                        autocomplete="given-name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="last_name">
+                        Last name
+                    </label>
+
+                    <input
+                        id="last_name"
+                        type="text"
+                        name="last_name"
+                        class="form-control"
+                        placeholder="Doe"
+                        autocomplete="family-name"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email address
+                </label>
+
+                <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    class="form-control"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="password-wrapper">
+
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Create a strong password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        onclick="togglePassword()"
+                        aria-label="Show password"
+                    >
+                        ◉
+                    </button>
+
+                </div>
+
+                <div class="password-rules">
+                    <span>12+ characters</span>
+                    <span>1 number</span>
+                    <span>Upper & lowercase</span>
+                </div>
+
+            </div>
+
+
+            <p class="terms">
+                By creating an account, you agree to our
+                <a href="#">Terms of Service</a>
+                and
+                <a href="#">Privacy Policy</a>.
+            </p>
+
+
+            <button
+                type="submit"
+                class="signup-btn"
+            >
+                Create CloudDesk account
+            </button>
+
+        </form>
+
+
+        <p class="bottom-text">
+            Already have an account?
+            <a href="{% url 'login' %}">
+                Sign in
+            </a>
+        </p>
+
+    </section>
+
+</div>
+
+
+<script>
+
+function togglePassword() {
+
+    const password = document.getElementById("password");
+
+    if (password.type === "password") {
+        password.type = "text";
+    } else {
+        password.type = "password";
+    }
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudDesk - Launch an instance</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            background: #f7f8fa;
+            color: #16191f;
+        }
+        .topbar {
+            height: 58px;
+            background: #101820;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 26px;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+        .brand { font-size: 19px; font-weight: 700; letter-spacing: .2px; }
+        .brand span { color: #7dd3fc; }
+        .crumbs { color: #d1d5db; font-size: 14px; }
+        .region-pill {
+            margin-left: auto;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+        .page {
+            max-width: 1420px;
+            margin: 0 auto;
+            padding: 26px 34px 60px;
+        }
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        h1 { margin: 0 0 6px; font-size: 30px; }
+        .subtitle { color: #5f6b7a; font-size: 14px; }
+        .account-line { margin-top: 8px; font-size: 13px; color: #697586; }
+        .account-line strong { color: #202938; }
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 320px;
+            gap: 22px;
+            align-items: start;
+        }
+        .stack { display: grid; gap: 16px; }
+        .card {
+            background: #fff;
+            border: 1px solid #d5d9e0;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,.04);
+        }
+        .card-head {
+            padding: 17px 20px;
+            border-bottom: 1px solid #eaedf1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        .card-head h2 { margin: 0; font-size: 18px; }
+        .card-head p { margin: 4px 0 0; color: #697586; font-size: 13px; }
+        .card-body { padding: 20px; }
+        .badge {
+            font-size: 12px;
+            border-radius: 999px;
+            padding: 5px 9px;
+            background: #eef6ff;
+            color: #174ea6;
+            white-space: nowrap;
+        }
+        .field { margin-bottom: 18px; }
+        .field:last-child { margin-bottom: 0; }
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+        input, select {
+            width: 100%;
+            border: 1px solid #9aa4b2;
+            border-radius: 5px;
+            padding: 10px 12px;
+            font: inherit;
+            background: #fff;
+            color: #16191f;
+        }
+        input:focus, select:focus {
+            outline: 2px solid rgba(0, 115, 230, .22);
+            border-color: #0073bb;
+        }
+        .hint { margin-top: 6px; color: #697586; font-size: 12px; }
+        .ami-tabs {
+            display: flex;
+            gap: 4px;
+            border-bottom: 1px solid #d5d9e0;
+            margin-bottom: 17px;
+        }
+        .ami-tab {
+            border: 0;
+            background: transparent;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #566273;
+            border-bottom: 2px solid transparent;
+        }
+        .ami-tab.active { color: #16191f; border-bottom-color: #0073bb; font-weight: 700; }
+        .ami-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .ami-option {
+            border: 1px solid #aab3bf;
+            border-radius: 6px;
+            padding: 14px;
+            cursor: pointer;
+            transition: .15s ease;
+            background: #fff;
+        }
+        .ami-option:hover { border-color: #5d7fa3; background: #fbfdff; }
+        .ami-option.selected { border: 2px solid #0073bb; padding: 13px; background: #f5fbff; }
+        .ami-option input { display: none; }
+        .ami-title { font-weight: 700; font-size: 14px; }
+        .ami-desc { margin-top: 6px; color: #5f6b7a; font-size: 12px; line-height: 1.45; }
+        .ami-id { margin-top: 9px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: #536273; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .summary {
+            position: sticky;
+            top: 78px;
+        }
+        .summary .card-body { padding: 18px; }
+        .summary-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .summary-sub { font-size: 12px; color: #697586; margin-bottom: 18px; }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 9px 0;
+            border-bottom: 1px solid #eef0f3;
+            font-size: 13px;
+        }
+        .summary-row span:first-child { color: #697586; }
+        .summary-row strong { text-align: right; max-width: 170px; overflow-wrap: anywhere; }
+        .cost-note {
+            margin-top: 16px;
+            background: #fff8e7;
+            border: 1px solid #ead29d;
+            color: #5a4630;
+            border-radius: 6px;
+            padding: 11px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .actions { display: flex; gap: 10px; margin-top: 18px; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            padding: 10px 15px;
+            border: 1px solid #8993a2;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            background: white;
+            color: #202938;
+        }
+        .btn-primary { background: #1677c8; color: #fff; border-color: #1677c8; width: 100%; }
+        .btn-primary:hover { background: #0e5fa2; }
+        .btn-secondary { width: 100%; }
+        .warning {
+            background: #fff8e7;
+            border: 1px solid #ead29d;
+            border-radius: 7px;
+            padding: 12px 14px;
+            color: #5a4630;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+        .error {
+            background: #fff1f1;
+            border: 1px solid #e3a7a7;
+            color: #8b1e1e;
+            border-radius: 7px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+        .flash {
+            border-radius: 7px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+        .flash.success { background: #edf9f0; border: 1px solid #a8d8b1; color: #185c24; }
+        .flash.error { background: #fff1f1; border: 1px solid #e3a7a7; color: #8b1e1e; }
+        .muted { color: #697586; font-size: 13px; }
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .checkbox input { width: auto; }
+        .advanced {
+            background: #fff;
+        }
+        details summary {
+            cursor: pointer;
+            list-style: none;
+            font-weight: 700;
+            font-size: 15px;
+        }
+        details summary::-webkit-details-marker { display: none; }
+        .back-link { color: #0b5cab; text-decoration: none; font-size: 13px; }
+        @media (max-width: 950px) {
+            .layout { grid-template-columns: 1fr; }
+            .summary { position: static; }
+        }
+        @media (max-width: 650px) {
+            .page { padding: 18px 14px 40px; }
+            .row, .ami-grid { grid-template-columns: 1fr; }
+            .topbar { padding: 0 14px; }
+            .region-pill { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">Cloud<span>Desk</span></div>
+        <div class="crumbs">AWS &nbsp;›&nbsp; EC2 &nbsp;›&nbsp; Launch an instance</div>
+        <div class="region-pill">Region: {{ aws_connection.region }}</div>
+    </header>
+
+    <main class="page">
+        <div class="page-header">
+            <div>
+                <a class="back-link" href="{% url 'aws_account' %}">← Back to AWS account</a>
+                <h1>Launch an instance</h1>
+                <div class="subtitle">Configure an Amazon EC2 instance in your connected AWS account.</div>
+                <div class="account-line">Account <strong>{{ aws_connection.name }}</strong> · ID <strong>{{ aws_connection.account_id|default:"—" }}</strong></div>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="flash {% if message.tags == 'success' %}success{% else %}error{% endif %}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% if ami_error %}
+            <div class="error">CloudDesk could not load Quick Start AMIs: {{ ami_error }}</div>
+        {% endif %}
+
+        {% if discovery_errors %}
+            <div class="warning">
+                Some AWS discovery calls failed. You can still configure the fields that are available.
+            </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'create_ec2' %}" id="launchForm">
+            {% csrf_token %}
+            <input type="hidden" name="image_id" id="image_id" value="{% if ami_options %}{{ ami_options.0.image_id }}{% endif %}">
+
+            <div class="layout">
+                <div class="stack">
+                    <section class="card">
+                        <div class="card-head">
+                            <div>
+                                <h2>Name and tags</h2>
+                                <p>Identify the instance with a name tag.</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="field">
+                                    <label for="name">Name</label>
+                                    <input type="text" id="name" name="name" value="CloudDesk-EC2" maxlength="100">
+                                    <div class="hint">CloudDesk will apply this value as the EC2 <strong>Name</strong> tag. For multiple instances, CloudDesk appends -1, -2, etc.</div>
+                                </div>
+                                <div class="field">
+                                    <label for="instance_count">Number of instances</label>
+                                    <input type="number" id="instance_count" name="instance_count" value="1" min="1" max="20" required>
+                                    <div class="hint">Launch between 1 and 20 instances in one request. AWS quotas and available capacity still apply.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <div class="card-head">
+                            <div>
+                                <h2>Application and OS Images</h2>
+                                <p>Select a Quick Start operating system. CloudDesk resolves the regional AMI ID automatically.</p>
+                            </div>
+                            <span class="badge">Quick Start</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="ami-tabs">
+                                <button type="button" class="ami-tab active">Quick Start</button>
+                                <button type="button" class="ami-tab" disabled>My AMIs</button>
+                                <button type="button" class="ami-tab" disabled>Marketplace</button>
+                            </div>
+
+                            {% if ami_options %}
+                                <div class="ami-grid">
+                                    {% for ami in ami_options %}
+                                        <label class="ami-option {% if forloop.first %}selected{% endif %}" data-image-id="{{ ami.image_id }}">
+                                            <input type="radio" name="ami_choice" value="{{ ami.image_id }}" {% if forloop.first %}checked{% endif %}>
+                                            <div class="ami-title">{{ ami.label }}</div>
+                                            <div class="ami-desc">{{ ami.description }}</div>
+                                            <div class="ami-id">{{ ami.image_id }}</div>
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="error" style="margin:0;">No Quick Start AMIs were returned for this AWS region. Refresh the page or verify the connected AWS credentials have <strong>ec2:DescribeImages</strong> permission.</div>
+                            {% endif %}
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <div class="card-head">
+                            <div>
+                                <h2>Instance type</h2>
+                                <p>Choose the hardware profile for the instance.</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="field">
+                                    <label for="instance_type">Instance type</label>
+                                    <select id="instance_type" name="instance_type">
+                                        <option value="t3.micro" selected>t3.micro — 2 vCPU · 1 GiB</option>
+                                        <option value="t3.small">t3.small — 2 vCPU · 2 GiB</option>
+                                        <option value="t3.medium">t3.medium — 2 vCPU · 4 GiB</option>
+                                        <option value="t3.large">t3.large — 2 vCPU · 8 GiB</option>
+                                        <option value="t4g.micro">t4g.micro — 2 vCPU · 1 GiB (ARM)</option>
+                                        <option value="t4g.small">t4g.small — 2 vCPU · 2 GiB (ARM)</option>
+                                        <option value="m7i-flex.large">m7i-flex.large — 2 vCPU · 8 GiB</option>
+                                        <option value="c7i-flex.large">c7i-flex.large — 2 vCPU · 4 GiB</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label>Architecture</label>
+                                    <input type="text" id="architecture" value="x86_64" readonly>
+                                    <div class="hint">The selected Quick Start image determines the architecture.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <div class="card-head">
+                            <div>
+                                <h2>Key pair (login)</h2>
+                                <p>Select a key pair if you plan to SSH into a Linux instance.</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="field">
+                                <label for="key_name">Key pair name</label>
+                                <select id="key_name" name="key_name">
+                                    <option value="">Proceed without a key pair (not recommended)</option>
+                                    {% for key in ec2_key_pairs %}
+                                        <option value="{{ key.name }}">{{ key.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="hint">CloudDesk does not create a private key file for you. Use an existing AWS key pair you already control.</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <div class="card-head">
+                            <div>
+                                <h2>Network settings</h2>
+                                <p>Choose the VPC, subnet and security groups for the instance.</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="field">
+                                    <label for="vpc_id">VPC</label>
+                                    <select id="vpc_id" name="vpc_id">
+                                        <option value="">Use subnet selection</option>
+                                        {% for vpc in ec2_vpcs %}
+                                            <option value="{{ vpc.id }}">{{ vpc.id }}{% if vpc.is_default %} — default{% endif %} — {{ vpc.cidr }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label for="subnet_id">Subnet</label>
+                                    <select id="subnet_id" name="subnet_id">
+                                        <option value="">AWS default selection</option>
+                                        {% for subnet in ec2_subnets %}
+                                            <option value="{{ subnet.id }}" data-vpc="{{ subnet.vpc_id }}">{{ subnet.id }} — {{ subnet.az }} — {{ subnet.cidr }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label>Firewall (security groups)</label>
+                                <div class="ami-grid">
+                                    {% for group in ec2_security_groups %}
+                                        <label class="ami-option" style="padding:11px;">
+                                            <span style="display:flex;align-items:center;gap:9px;">
+                                                <input type="checkbox" name="security_group_ids" value="{{ group.id }}" style="display:block;width:auto;">
+                                                <span>
+                                                    <strong>{{ group.name }}</strong>
+                                                    <span class="muted">({{ group.id }})</span>
+                                                </span>
+                                            </span>
+                                        </label>
+                                    {% empty %}
+                                        <div class="muted">No security groups were returned.</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <label class="checkbox">
+                                <input type="checkbox" name="associate_public_ip" checked>
+                                Auto-assign public IP address
+                            </label>
+                            <div class="hint">Public IPv4 availability depends on the selected subnet and VPC configuration.</div>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <div class="card-head">
+                            <div>
+                                <h2>Configure storage</h2>
+                                <p>Configure the root EBS volume created with the instance.</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="field">
+                                    <label for="volume_size">Root volume size (GiB)</label>
+                                    <input type="number" id="volume_size" name="volume_size" value="8" min="8" max="16384">
+                                </div>
+                                <div class="field">
+                                    <label for="volume_type">Volume type</label>
+                                    <select id="volume_type" name="volume_type">
+                                        <option value="gp3" selected>gp3 — General Purpose SSD</option>
+                                        <option value="gp2">gp2 — General Purpose SSD</option>
+                                        <option value="io1">io1 — Provisioned IOPS SSD</option>
+                                        <option value="io2">io2 — Provisioned IOPS SSD</option>
+                                        <option value="st1">st1 — Throughput Optimized HDD</option>
+                                        <option value="sc1">sc1 — Cold HDD</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card advanced">
+                        <div class="card-body">
+                            <details>
+                                <summary>Advanced details</summary>
+                                <div style="margin-top:16px;" class="muted">
+                                    CloudDesk will expand this section with IAM role, user data, monitoring, CPU options, placement, metadata options, and other advanced EC2 controls in the next stage.
+                                </div>
+                            </details>
+                        </div>
+                    </section>
+
+                    <div class="warning">
+                        <strong>Review before launching:</strong> Running EC2 instances, EBS storage, public IPv4 addresses, and other attached resources can create AWS charges. Review the selected image, instance type, network, and storage before launching.
+                    </div>
+                </div>
+
+                <aside class="summary">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="summary-title">Summary</div>
+                            <div class="summary-sub">CloudDesk will launch this configuration in your connected AWS account.</div>
+
+                            <div class="summary-row"><span>Name</span><strong id="sumName">CloudDesk-EC2</strong></div>
+                            <div class="summary-row"><span>Number of instances</span><strong id="sumCount">1</strong></div>
+                            <div class="summary-row"><span>AMI</span><strong id="sumAmi">{% if ami_options %}{{ ami_options.0.label }}{% else %}Not selected{% endif %}</strong></div>
+                            <div class="summary-row"><span>Instance type</span><strong id="sumType">t3.micro</strong></div>
+                            <div class="summary-row"><span>Key pair</span><strong id="sumKey">None</strong></div>
+                            <div class="summary-row"><span>Subnet</span><strong id="sumSubnet">AWS default</strong></div>
+                            <div class="summary-row"><span>Storage</span><strong id="sumStorage">8 GiB gp3</strong></div>
+                            <div class="summary-row"><span>Public IP</span><strong id="sumPublicIp">Enabled</strong></div>
+
+                            <div class="cost-note">
+                                AWS pricing depends on the region, instance type, operating system, storage, network usage, and other resources. CloudDesk does not control AWS billing.
+                            </div>
+
+                            <div class="actions">
+                                <a class="btn btn-secondary" href="{% url 'aws_account' %}">Cancel</a>
+                            </div>
+                            <div class="actions" style="display:block;">
+                                <button class="btn btn-primary" type="submit" id="launchBtn">Launch instance</button>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        const form = document.getElementById('launchForm');
+        const nameInput = document.getElementById('name');
+        const countInput = document.getElementById('instance_count');
+        const typeInput = document.getElementById('instance_type');
+        const keyInput = document.getElementById('key_name');
+        const subnetInput = document.getElementById('subnet_id');
+        const volumeSize = document.getElementById('volume_size');
+        const volumeType = document.getElementById('volume_type');
+        const imageHidden = document.getElementById('image_id');
+        const publicIp = document.querySelector('input[name="associate_public_ip"]');
+        const sumName = document.getElementById('sumName');
+        const sumCount = document.getElementById('sumCount');
+        const sumAmi = document.getElementById('sumAmi');
+        const sumType = document.getElementById('sumType');
+        const sumKey = document.getElementById('sumKey');
+        const sumSubnet = document.getElementById('sumSubnet');
+        const sumStorage = document.getElementById('sumStorage');
+        const sumPublicIp = document.getElementById('sumPublicIp');
+
+        function updateSummary() {
+            sumName.textContent = nameInput.value || 'CloudDesk-EC2';
+            sumCount.textContent = countInput.value || '1';
+            sumType.textContent = typeInput.value;
+            sumKey.textContent = keyInput.value || 'None';
+            sumSubnet.textContent = subnetInput.value || 'AWS default';
+            sumStorage.textContent = `${volumeSize.value || 8} GiB ${volumeType.value}`;
+            sumPublicIp.textContent = publicIp.checked ? 'Enabled' : 'Disabled';
+        }
+
+        document.querySelectorAll('.ami-option[data-image-id]').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.ami-option[data-image-id]').forEach(item => item.classList.remove('selected'));
+                card.classList.add('selected');
+                const radio = card.querySelector('input[type="radio"]');
+                if (radio) radio.checked = true;
+                imageHidden.value = card.dataset.imageId || '';
+                sumAmi.textContent = card.querySelector('.ami-title')?.textContent.trim() || 'Selected';
+            });
+        });
+
+        nameInput.addEventListener('input', updateSummary);
+        countInput.addEventListener('input', updateSummary);
+        typeInput.addEventListener('change', updateSummary);
+        keyInput.addEventListener('change', updateSummary);
+        subnetInput.addEventListener('change', updateSummary);
+        volumeSize.addEventListener('input', updateSummary);
+        volumeType.addEventListener('change', updateSummary);
+        publicIp.addEventListener('change', updateSummary);
+
+        document.getElementById('vpc_id').addEventListener('change', event => {
+            const vpcId = event.target.value;
+            Array.from(subnetInput.options).forEach(option => {
+                if (!option.dataset.vpc) {
+                    option.hidden = false;
+                    return;
+                }
+                option.hidden = Boolean(vpcId && option.dataset.vpc !== vpcId);
+            });
+            if (subnetInput.selectedOptions[0]?.hidden) subnetInput.value = '';
+            updateSummary();
+        });
+
+        form.addEventListener('submit', event => {
+            if (!imageHidden.value) {
+                event.preventDefault();
+                alert('Please select an operating system image first.');
+                return;
+            }
+            if (!nameInput.value.trim()) {
+                event.preventDefault();
+                alert('Please enter an instance name.');
+                nameInput.focus();
+                return;
+            }
+
+            const count = Number(countInput.value);
+            if (!Number.isInteger(count) || count < 1 || count > 20) {
+                event.preventDefault();
+                alert('Number of instances must be between 1 and 20.');
+                countInput.focus();
+                return;
+            }
+
+            if (!confirm(`Launch ${count} EC2 instance${count === 1 ? '' : 's'} in your connected AWS account? AWS charges may apply.`)) {
+                event.preventDefault();
+            }
+        });
+
+        updateSummary();
+    </script>
+</body>
+</html>

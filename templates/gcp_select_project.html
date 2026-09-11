@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudDesk - Connect GCP</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f2f6ff;
+            color: #111827;
+            min-height: 100vh;
+        }
+        .page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 15px;
+        }
+        .card {
+            width: 100%;
+            max-width: 520px;
+            background: white;
+            border-radius: 18px;
+            padding: 34px;
+            box-shadow: 0 20px 50px rgba(17,24,39,.10);
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 28px;
+        }
+        .logo span { color: #3864c7; }
+        .icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: #eef4ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 18px;
+        }
+        h1 { font-size: 28px; margin-bottom: 8px; }
+        .intro {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+        .field { margin-bottom: 18px; }
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+            padding: 12px;
+            font-size: 13px;
+            background: white;
+        }
+        input:focus {
+            outline: none;
+            border-color: #3864c7;
+            box-shadow: 0 0 0 3px rgba(56,100,199,.10);
+        }
+        .help {
+            color: #6b7280;
+            font-size: 11px;
+            line-height: 1.5;
+            margin-top: 7px;
+        }
+        .button {
+            width: 100%;
+            border: none;
+            background: #3864c7;
+            color: white;
+            padding: 13px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .button:hover { background: #2f56ab; }
+        .security {
+            margin-top: 16px;
+            background: #f4f7ff;
+            border-radius: 10px;
+            padding: 12px 13px;
+            color: #4b5563;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #3864c7;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        .messages { margin-bottom: 18px; }
+        .message {
+            padding: 11px 12px;
+            border-radius: 9px;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+        .message.error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+        .message.success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="card">
+
+        <div class="logo">Cloud<span>Desk</span></div>
+
+        <div class="icon">🟢</div>
+
+        <h1>Connect GCP</h1>
+
+        <p class="intro">
+            Connect your Google Cloud project to CloudDesk so you can
+            manage your GCP infrastructure from one place.
+        </p>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% else %}error{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="field">
+                <label for="name">Connection Name</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="My GCP Account"
+                    value="My GCP Account"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <label for="project_id">GCP Project ID</label>
+                <input
+                    type="text"
+                    id="project_id"
+                    name="project_id"
+                    placeholder="my-project-123"
+                    required
+                >
+                <div class="help">
+                    Enter the project ID of the GCP project you want CloudDesk to manage.
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="credentials_file">Service Account JSON</label>
+                <input
+                    type="file"
+                    id="credentials_file"
+                    name="credentials_file"
+                    accept="application/json,.json"
+                    required
+                >
+                <div class="help">
+                    Upload the JSON key downloaded for the service account you authorized in this GCP project.
+                </div>
+            </div>
+
+            <button type="submit" class="button">
+                Connect GCP
+            </button>
+        </form>
+
+        <div class="security">
+            🔒 CloudDesk will validate the credential before saving the connection.
+            Never upload a Google account password or any unrelated credential file.
+        </div>
+
+        <a href="{% url 'dashboard' %}" class="back">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+</div>
+
+</body>
+</html>

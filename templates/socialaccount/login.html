@@ -1,0 +1,196 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CloudDesk - Google Sign In</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 420px;
+            background: white;
+            border-radius: 18px;
+            padding: 40px;
+
+            box-shadow:
+                0 15px 45px rgba(0, 0, 0, 0.08);
+
+            text-align: center;
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+
+            margin: 0 auto 20px;
+
+            border-radius: 16px;
+
+            background: #111827;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 27px;
+            color: #111827;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .google-box {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 25px;
+
+            background: #fafafa;
+        }
+
+        .google-icon {
+            width: 44px;
+            height: 44px;
+
+            margin: 0 auto 12px;
+
+            border-radius: 50%;
+
+            background: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 22px;
+            font-weight: bold;
+
+            border: 1px solid #e5e7eb;
+        }
+
+        .google-text {
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .continue-btn {
+            width: 100%;
+
+            border: none;
+            border-radius: 10px;
+
+            padding: 14px 20px;
+
+            background: #111827;
+            color: white;
+
+            font-size: 15px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .continue-btn:hover {
+            background: #1f2937;
+            transform: translateY(-1px);
+        }
+
+        .cancel {
+            display: inline-block;
+
+            margin-top: 18px;
+
+            color: #6b7280;
+            text-decoration: none;
+
+            font-size: 14px;
+        }
+
+        .cancel:hover {
+            color: #111827;
+        }
+
+        .footer {
+            margin-top: 30px;
+
+            color: #9ca3af;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">
+        C
+    </div>
+
+    <h1>Continue with Google</h1>
+
+    <p class="subtitle">
+        You're signing in to CloudDesk using your Google account.
+    </p>
+
+    <div class="google-box">
+
+        <div class="google-icon">
+            G
+        </div>
+
+        <div class="google-text">
+            You are about to sign in using your Google account.
+        </div>
+
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="continue-btn">
+            Continue with Google
+        </button>
+    </form>
+
+    <a href="{% url 'login' %}" class="cancel">
+        ← Back to CloudDesk Login
+    </a>
+
+    <div class="footer">
+        CloudDesk · Secure Cloud Management
+    </div>
+
+</div>
+
+</body>
+</html> -->

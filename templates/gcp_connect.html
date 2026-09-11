@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CloudDesk - Connect GCP</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #111827;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 520px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 34px;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 28px;
+        }
+
+        .logo span {
+            color: #3b6edc;
+        }
+
+        .cloud-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: #eef6e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        h1 {
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 7px;
+            color: #374151;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 13px;
+            background: white;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3b6edc;
+            box-shadow: 0 0 0 3px rgba(59, 110, 220, 0.10);
+        }
+
+        .help {
+            color: #9ca3af;
+            font-size: 11px;
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            width: 100%;
+            border: none;
+            background: #3864c7;
+            color: white;
+            padding: 13px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .btn:hover {
+            background: #2f58b4;
+        }
+
+        .security-note {
+            margin-top: 16px;
+            padding: 12px 14px;
+            border-radius: 9px;
+            background: #f5f8ff;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .messages {
+            margin-bottom: 18px;
+        }
+
+        .message {
+            padding: 11px 13px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 22px;
+            color: #3864c7;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .back:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="logo">
+            Cloud<span>Desk</span>
+        </div>
+
+        <div class="cloud-icon">
+            🟢
+        </div>
+
+        <h1>
+            Connect GCP
+        </h1>
+
+        <p class="subtitle">
+            Connect your Google Cloud Platform project to manage
+            your cloud infrastructure from CloudDesk.
+        </p>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+            <div class="field">
+
+                <label for="name">
+                    Connection Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="My GCP Account"
+                    value="My GCP Account"
+                    required
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label for="project_id">
+                    GCP Project ID
+                </label>
+
+                <input
+                    type="text"
+                    id="project_id"
+                    name="project_id"
+                    placeholder="example-project-123"
+                    required
+                >
+
+                <div class="help">
+                    Enter the Google Cloud project ID that this
+                    service account belongs to.
+                </div>
+
+            </div>
+
+            <div class="field">
+
+                <label for="credentials_file">
+                    Service Account JSON
+                </label>
+
+                <input
+                    type="file"
+                    id="credentials_file"
+                    name="credentials_file"
+                    accept=".json,application/json"
+                    required
+                >
+
+                <div class="help">
+                    Upload the JSON key downloaded from your
+                    Google Cloud service account.
+                </div>
+
+            </div>
+
+            <button
+                type="submit"
+                class="btn"
+            >
+                Connect GCP
+            </button>
+
+        </form>
+
+        <div class="security-note">
+            🔒 CloudDesk will verify the GCP credentials before
+            saving the connection.
+        </div>
+
+        <a
+            href="{% url 'dashboard' %}"
+            class="back"
+        >
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

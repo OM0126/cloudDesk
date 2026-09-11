@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create your CloudDesk account</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background: #ffffff;
+            color: #111827;
+            min-height: 100vh;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* LEFT SIDE */
+
+        .left {
+            width: 50%;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 50% 100%,
+                    #4338ca 0%,
+                    #17104d 35%,
+                    #050816 75%
+                );
+
+            color: white;
+
+            padding: 90px 9%;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left::before {
+            content: "";
+            position: absolute;
+
+            width: 500px;
+            height: 500px;
+
+            border-radius: 50%;
+
+            background: rgba(99, 102, 241, 0.15);
+
+            filter: blur(80px);
+
+            bottom: -250px;
+            left: 50%;
+        }
+
+        .brand {
+            font-size: 32px;
+            font-weight: 800;
+
+            margin-bottom: 55px;
+
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand span {
+            color: #818cf8;
+        }
+
+        .left h1 {
+            font-size: 44px;
+            line-height: 1.15;
+
+            margin-bottom: 22px;
+
+            position: relative;
+            z-index: 2;
+        }
+
+        .left p {
+            font-size: 17px;
+            line-height: 1.7;
+
+            color: #c7d2fe;
+
+            max-width: 500px;
+
+            position: relative;
+            z-index: 2;
+        }
+
+        .features {
+            margin-top: 45px;
+
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+            font-size: 16px;
+        }
+
+        .check {
+            width: 24px;
+            height: 24px;
+
+            border-radius: 50%;
+
+            background: #6366f1;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 13px;
+        }
+
+        /* RIGHT SIDE */
+
+        .right {
+            width: 50%;
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 50px;
+        }
+
+        .form-box {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .form-box h2 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 15px;
+            line-height: 1.6;
+
+            margin-bottom: 32px;
+        }
+
+        .field {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+
+            height: 52px;
+
+            padding: 0 15px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #6366f1;
+
+            box-shadow:
+                0 0 0 3px rgba(99, 102, 241, 0.12);
+        }
+
+        input[readonly] {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .hint {
+            margin-top: 7px;
+
+            font-size: 13px;
+
+            color: #6b7280;
+        }
+
+        .email-badge {
+            margin-top: 8px;
+
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            font-size: 13px;
+
+            color: #15803d;
+        }
+
+        .google-icon {
+            width: 18px;
+            height: 18px;
+
+            border-radius: 50%;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: 700;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #b91c1c;
+
+            border: 1px solid #fecaca;
+
+            padding: 12px 14px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            margin-bottom: 10px;
+        }
+
+        .create-btn {
+            width: 100%;
+
+            height: 52px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #111827;
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .create-btn:hover {
+            background: #000000;
+            transform: translateY(-1px);
+        }
+
+        .terms {
+            margin-top: 18px;
+
+            color: #6b7280;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+        }
+
+        .secure {
+            margin-top: 28px;
+
+            padding-top: 22px;
+
+            border-top: 1px solid #e5e7eb;
+
+            color: #6b7280;
+
+            font-size: 13px;
+
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media (max-width: 900px) {
+
+            .page {
+                flex-direction: column;
+            }
+
+            .left,
+            .right {
+                width: 100%;
+            }
+
+            .left {
+                min-height: auto;
+                padding: 50px 30px;
+            }
+
+            .left h1 {
+                font-size: 34px;
+            }
+
+            .right {
+                padding: 40px 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- LEFT -->
+    <section class="left">
+
+        <div class="brand">
+            Cloud<span>Desk</span>
+        </div>
+
+        <h1>
+            Create your<br>
+            CloudDesk account
+        </h1>
+
+        <p>
+            Manage your cloud accounts from one secure,
+            simple and powerful dashboard.
+        </p>
+
+        <div class="features">
+
+            <div class="feature">
+                <span class="check">✓</span>
+                Connect multiple cloud providers
+            </div>
+
+            <div class="feature">
+                <span class="check">✓</span>
+                Manage your cloud accounts in one place
+            </div>
+
+            <div class="feature">
+                <span class="check">✓</span>
+                Secure Google authentication
+            </div>
+
+            <div class="feature">
+                <span class="check">✓</span>
+                Monitor your cloud workspace
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- RIGHT -->
+    <section class="right">
+
+        <div class="form-box">
+
+            <h2>Create your account</h2>
+
+            <p class="subtitle">
+                You're almost there. Choose a username for your
+                CloudDesk account.
+            </p>
+
+
+            {% if messages %}
+
+                <div class="messages">
+
+                    {% for message in messages %}
+
+                        <div class="error">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- EMAIL -->
+
+                <div class="field">
+
+                    <label>
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        value="{{ email }}"
+                        readonly
+                    >
+
+                    <div class="email-badge">
+
+                        <span class="google-icon">G</span>
+
+                        Verified with Google
+
+                    </div>
+
+                </div>
+
+
+                <!-- USERNAME -->
+
+                <div class="field">
+
+                    <label for="username">
+                        Username *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Choose your username"
+                        minlength="3"
+                        maxlength="150"
+                        autocomplete="username"
+                        required
+                        autofocus
+                    >
+
+                    <div class="hint">
+                        This username will be used to identify you
+                        inside CloudDesk.
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="create-btn"
+                >
+                    Create CloudDesk Account
+                </button>
+
+            </form>
+
+
+            <p class="terms">
+                By creating your CloudDesk account, you agree to
+                use the service responsibly. Your Google email is
+                securely associated with your account.
+            </p>
+
+
+            <div class="secure">
+
+                🔒
+
+                Your Google account is used only for secure
+                authentication.
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+</body>
+</html>
