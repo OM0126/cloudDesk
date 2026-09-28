@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from django.http import JsonResponse
 
 from .models import AWSConnection
 from . import aws
@@ -102,6 +103,40 @@ def ec2_launch_page(request):
 
 @login_required
 @require_POST
+def create_ec2_key_pair(request):
+    aws_connection = _get_connection(request)
+
+    if not aws_connection:
+        return JsonResponse(
+            {"ok": False, "error": "No connected AWS account found."},
+            status=400,
+        )
+
+    key_name = request.POST.get("key_name", "").strip()
+    key_type = request.POST.get("key_type", "rsa").strip().lower()
+
+    result = aws.create_ec2_key_pair(
+        aws_connection,
+        key_name=key_name,
+        key_type=key_type,
+    )
+
+    if not result.get("ok"):
+        return JsonResponse(result, status=400)
+
+    return JsonResponse(
+        {
+            "ok": True,
+            "name": result.get("name"),
+            "key_pair_id": result.get("key_pair_id"),
+            "fingerprint": result.get("fingerprint"),
+            "key_material": result.get("key_material"),
+        }
+    )
+
+
+@login_required
+@require_POST
 def create_ec2(request):
     aws_connection = _get_connection(request)
 
@@ -110,6 +145,7 @@ def create_ec2(request):
         return redirect("dashboard")
 
     image_id = request.POST.get("image_id", "").strip()
+    os_slug = request.POST.get("os_slug", "").strip().lower()
     instance_type = request.POST.get("instance_type", "t3.micro").strip()
     name = request.POST.get("name", "CloudDesk-EC2").strip()
     subnet_id = request.POST.get("subnet_id", "").strip() or None
@@ -127,6 +163,13 @@ def create_ec2(request):
 
     if not image_id:
         messages.error(request, "Please select an operating system image.")
+        return redirect("aws_ec2_launch")
+
+    if os_slug == "macos":
+        messages.error(
+            request,
+            "macOS EC2 instances require a Dedicated Host. CloudDesk will add Dedicated Host launch support before macOS instances can be launched here.",
+        )
         return redirect("aws_ec2_launch")
 
     try:
@@ -162,6 +205,7 @@ def create_ec2(request):
         root_volume_size=volume_size,
         root_volume_type=volume_type,
         associate_public_ip=associate_public_ip,
+        root_device_name="/dev/sda1" if os_slug == "windows-server" else "/dev/xvda",
     )
 
     if result.get("ok"):

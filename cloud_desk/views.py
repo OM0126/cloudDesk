@@ -14,9 +14,8 @@ import time
 import hashlib
 import hmac
 
-from .models import AWSConnection, GCPConnection
+from .models import AWSConnection
 from . import aws
-from . import gcp
 
 
 ACTION_MAP = {
@@ -257,154 +256,7 @@ def aws_connect(request):
 
 
 # =========================================================
-# GCP CONNECT - SERVICE ACCOUNT JSON
-# =========================================================
-
-@login_required
-def gcp_connect(request):
-    """Connect a user's GCP project using a service-account JSON key."""
-
-    if request.method == "GET":
-        return render(request, "gcp_connect.html")
-
-    if request.method != "POST":
-        return render(request, "gcp_connect.html")
-
-    name = request.POST.get(
-        "name",
-        "My GCP Account",
-    ).strip() or "My GCP Account"
-
-    project_id = request.POST.get(
-        "project_id",
-        "",
-    ).strip()
-
-    credentials_file = request.FILES.get("credentials_file")
-
-    if not project_id:
-        messages.error(request, "GCP Project ID is required.")
-        return render(request, "gcp_connect.html")
-
-    if not credentials_file:
-        messages.error(request, "Please upload the service-account JSON file.")
-        return render(request, "gcp_connect.html")
-
-    if not credentials_file.name.lower().endswith(".json"):
-        messages.error(request, "Please upload a .json service-account key file.")
-        return render(request, "gcp_connect.html")
-
-    try:
-        import json
-        from google.oauth2 import service_account
-        from googleapiclient.discovery import build
-
-        raw = credentials_file.read()
-
-        if len(raw) > 100 * 1024:
-            raise ValueError("Credential file is too large.")
-
-        try:
-            key_info = json.loads(raw.decode("utf-8"))
-        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-            raise ValueError("The uploaded file is not valid JSON.") from exc
-
-        # Google recommends validating externally sourced credential configs.
-        if key_info.get("type") != "service_account":
-            raise ValueError(
-                "The JSON file is not a Google Cloud service-account key."
-            )
-
-        json_project_id = str(key_info.get("project_id", "")).strip()
-        service_account_email = str(key_info.get("client_email", "")).strip()
-
-        if not json_project_id:
-            raise ValueError(
-                "The service-account JSON does not contain a project_id."
-            )
-
-        if not service_account_email:
-            raise ValueError(
-                "The service-account JSON does not contain client_email."
-            )
-
-        # The project in the uploaded key should match the project
-        # the user says they want CloudDesk to manage.
-        if json_project_id != project_id:
-            raise ValueError(
-                "Project ID does not match the project_id in the JSON credential."
-            )
-
-        credentials = service_account.Credentials.from_service_account_info(
-            key_info,
-            scopes=["https://www.googleapis.com/auth/cloud-platform"],
-        )
-
-        # Test actual access to the requested project.
-        resource_manager = build(
-            "cloudresourcemanager",
-            "v1",
-            credentials=credentials,
-            cache_discovery=False,
-        )
-
-        project = (
-            resource_manager
-            .projects()
-            .get(projectId=project_id)
-            .execute()
-        )
-
-        verified_project_id = project.get("projectId")
-        verified_project_name = project.get("name")
-
-        if verified_project_id != project_id:
-            raise ValueError(
-                "Google Cloud returned a different project ID."
-            )
-
-        # Upsert the user's GCP connection.
-        existing = GCPConnection.objects.filter(
-            user=request.user,
-            project_id=project_id,
-        ).first()
-
-        json_text = json.dumps(key_info)
-
-        if existing:
-            existing.name = name
-            existing.project_name = verified_project_name or project_id
-            existing.service_account_email = service_account_email
-            existing.credentials_json = json_text
-            existing.is_connected = True
-            existing.save()
-        else:
-            existing = GCPConnection.objects.create(
-                user=request.user,
-                name=name,
-                project_id=project_id,
-                project_name=verified_project_name or project_id,
-                service_account_email=service_account_email,
-                credentials_json=json_text,
-                is_connected=True,
-            )
-
-        messages.success(
-            request,
-            f"GCP connected successfully! Project: {project_id}",
-        )
-        return redirect("dashboard")
-
-    except Exception as e:
-        messages.error(
-            request,
-            f"GCP connection failed: {str(e)}",
-        )
-        return render(request, "gcp_connect.html")
-
-
-# =========================================================
-# DISCONNECT AWS / GCP
+# DISCONNECT AWS
 # =========================================================
 
 @login_required
@@ -436,34 +288,6 @@ def disconnect_aws(request):
     return redirect("dashboard")
 
 
-@login_required
-@require_POST
-def disconnect_gcp(request):
-    connection_id = request.POST.get("connection_id", "").strip()
-
-    if not connection_id:
-        messages.error(request, "GCP connection ID is required.")
-        return redirect("dashboard")
-
-    connection = GCPConnection.objects.filter(
-        id=connection_id,
-        user=request.user,
-        is_connected=True,
-    ).first()
-
-    if not connection:
-        messages.error(request, "GCP connection was not found.")
-        return redirect("dashboard")
-
-    project_id = connection.project_id or "your GCP project"
-    connection.delete()
-
-    messages.success(
-        request,
-        f"GCP disconnected successfully from CloudDesk: {project_id}.",
-    )
-    return redirect("dashboard")
-
 
 # =========================================================
 # DASHBOARD
@@ -481,20 +305,6 @@ def dashboard(request):
     ).order_by("-created_at").first()
 
     aws_count = AWSConnection.objects.filter(
-        user=request.user,
-        is_connected=True,
-    ).count()
-
-    # =====================================================
-    # GCP CONNECTION
-    # =====================================================
-
-    gcp_connection = GCPConnection.objects.filter(
-        user=request.user,
-        is_connected=True,
-    ).order_by("-created_at").first()
-
-    gcp_count = GCPConnection.objects.filter(
         user=request.user,
         is_connected=True,
     ).count()
@@ -518,10 +328,11 @@ def dashboard(request):
 
     cloud_accounts = {
         "aws": aws_count,
-        "gcp": gcp_count,
     }
 
-    total_cloud_accounts = aws_count + gcp_count
+    # GCP and Azure are not active yet.
+    # They are shown in the UI as coming soon.
+    total_cloud_accounts = aws_count
 
     # =====================================================
     # ALERTS
@@ -535,15 +346,6 @@ def dashboard(request):
             "title": "AWS not connected",
             "message": (
                 "Connect an AWS account to start managing your cloud."
-            ),
-        })
-
-    if not gcp_connection:
-        alerts.append({
-            "type": "warning",
-            "title": "GCP not connected",
-            "message": (
-                "Connect a GCP project to start managing your GCP resources."
             ),
         })
 
@@ -564,57 +366,6 @@ def dashboard(request):
             }
 
     # =====================================================
-    # GCP SUMMARY
-    # =====================================================
-
-    gcp_summary = None
-
-    if gcp_connection:
-        try:
-            gcp_summary = gcp.get_dashboard_summary(
-                gcp_connection
-            )
-        except Exception as e:
-            error = str(e)
-            gcp_summary = {
-                "compute": {
-                    "ok": False,
-                    "data": [],
-                    "error": error,
-                },
-                "storage": {
-                    "ok": False,
-                    "data": [],
-                    "error": error,
-                },
-                "sql": {
-                    "ok": False,
-                    "data": [],
-                    "error": error,
-                },
-                "functions": {
-                    "ok": False,
-                    "data": [],
-                    "error": error,
-                },
-                "vpc": {
-                    "ok": False,
-                    "data": [],
-                    "error": error,
-                },
-                "iam": {
-                    "ok": False,
-                    "data": [],
-                    "error": error,
-                },
-                "monitoring": {
-                    "ok": False,
-                    "data": [],
-                    "error": error,
-                },
-            }
-
-    # =====================================================
     # RENDER DASHBOARD
     # =====================================================
 
@@ -623,9 +374,7 @@ def dashboard(request):
         "dashboard.html",
         {
             "aws_connection": aws_connection,
-            "gcp_connection": gcp_connection,
             "aws_summary": aws_summary,
-            "gcp_summary": gcp_summary,
             "profile": profile,
             "cloud_accounts": cloud_accounts,
             "total_cloud_accounts": total_cloud_accounts,
@@ -633,6 +382,334 @@ def dashboard(request):
         },
     )
 
+
+# =========================================================
+# CLOUD ACCOUNTS
+# =========================================================
+
+@login_required
+def cloud_accounts(request):
+    """Show active cloud accounts and upcoming providers."""
+
+    aws_connections = AWSConnection.objects.filter(
+        user=request.user,
+        is_connected=True,
+    ).order_by("-created_at")
+
+    aws_count = aws_connections.count()
+
+    return render(
+        request,
+        "cloud_accounts.html",
+        {
+            "aws_connections": aws_connections,
+            "aws_count": aws_count,
+            "total_cloud_accounts": aws_count,
+        },
+    )
+
+
+# =========================================================
+# AWS SERVICE CREATION PAGES
+# =========================================================
+
+def _get_connected_aws(request):
+    return (
+        AWSConnection.objects.filter(
+            user=request.user,
+            is_connected=True,
+        )
+        .order_by("-created_at")
+        .first()
+    )
+
+
+@login_required
+def aws_create_s3(request):
+    connection = _get_connected_aws(request)
+    if not connection:
+        messages.error(request, "No connected AWS account found.")
+        return redirect("dashboard")
+
+    if request.method == "POST":
+        bucket_name = request.POST.get("bucket_name", "").strip().lower()
+        result = aws.create_s3_bucket(connection, bucket_name)
+
+        if result.get("ok"):
+            messages.success(
+                request,
+                f"S3 bucket '{result.get('name', bucket_name)}' created successfully.",
+            )
+            return redirect("aws_account")
+
+        messages.error(request, result.get("error", "Could not create the S3 bucket."))
+
+    return render(
+        request,
+        "aws_create_service.html",
+        {
+            "service": "s3",
+            "title": "Create an S3 bucket",
+            "description": "Create an object storage bucket in your connected AWS account.",
+            "aws_connection": connection,
+        },
+    )
+
+
+@login_required
+def aws_create_rds(request):
+    connection = _get_connected_aws(request)
+    if not connection:
+        messages.error(request, "No connected AWS account found.")
+        return redirect("dashboard")
+
+    form_values = {
+        "db_identifier": "",
+        "engine": "mysql",
+        "instance_class": "db.t3.micro",
+        "allocated_storage": "20",
+        "db_name": "",
+        "master_username": "admin",
+        "publicly_accessible": "",
+    }
+
+    if request.method == "POST":
+        form_values.update(
+            {
+                "db_identifier": request.POST.get("db_identifier", "").strip(),
+                "engine": request.POST.get("engine", "mysql").strip().lower(),
+                "instance_class": request.POST.get("instance_class", "db.t3.micro").strip(),
+                "allocated_storage": request.POST.get("allocated_storage", "20").strip(),
+                "db_name": request.POST.get("db_name", "").strip(),
+                "master_username": request.POST.get("master_username", "admin").strip(),
+                "publicly_accessible": "on" if request.POST.get("publicly_accessible") == "on" else "",
+            }
+        )
+
+        result = aws.create_rds_instance(
+            connection,
+            db_identifier=form_values["db_identifier"],
+            engine=form_values["engine"],
+            instance_class=form_values["instance_class"],
+            allocated_storage=form_values["allocated_storage"],
+            master_username=form_values["master_username"],
+            master_password=request.POST.get("master_password", ""),
+            db_name=form_values["db_name"] or None,
+            publicly_accessible=form_values["publicly_accessible"] == "on",
+        )
+
+        if result.get("ok"):
+            messages.success(
+                request,
+                f"RDS database '{result.get('id', form_values['db_identifier'])}' creation requested.",
+            )
+            return redirect("aws_account")
+
+        messages.error(request, result.get("error", "Could not create the RDS database."))
+
+    return render(
+        request,
+        "aws_create_service.html",
+        {
+            "service": "rds",
+            "title": "Create an RDS database",
+            "description": "Configure a managed relational database in your connected AWS account.",
+            "aws_connection": connection,
+            "form_values": form_values,
+        },
+    )
+
+
+@login_required
+def aws_create_lambda(request):
+    connection = _get_connected_aws(request)
+    if not connection:
+        messages.error(request, "No connected AWS account found.")
+        return redirect("dashboard")
+
+    form_values = {
+        "function_name": "",
+        "runtime": "python3.12",
+        "handler": "lambda_function.lambda_handler",
+        "role_arn": "",
+        "memory_size": "128",
+        "timeout": "10",
+        "source_code": "def lambda_handler(event, context):\n    return {\"statusCode\": 200, \"body\": \"Hello from CloudDesk\"}\n",
+    }
+
+    if request.method == "POST":
+        for key in form_values:
+            if key in request.POST:
+                form_values[key] = request.POST.get(key, "")
+
+        result = aws.create_lambda_function(
+            connection,
+            function_name=form_values["function_name"],
+            runtime=form_values["runtime"],
+            handler=form_values["handler"],
+            role_arn=form_values["role_arn"],
+            source_code=form_values["source_code"],
+            memory_size=form_values["memory_size"],
+            timeout=form_values["timeout"],
+        )
+
+        if result.get("ok"):
+            messages.success(
+                request,
+                f"Lambda function '{result.get('name', form_values['function_name'])}' creation requested.",
+            )
+            return redirect("aws_account")
+
+        messages.error(request, result.get("error", "Could not create the Lambda function."))
+
+    return render(
+        request,
+        "aws_create_service.html",
+        {
+            "service": "lambda",
+            "title": "Create a Lambda function",
+            "description": "Configure and deploy a serverless function from CloudDesk.",
+            "aws_connection": connection,
+            "form_values": form_values,
+        },
+    )
+
+
+@login_required
+def aws_create_vpc(request):
+    connection = _get_connected_aws(request)
+    if not connection:
+        messages.error(request, "No connected AWS account found.")
+        return redirect("dashboard")
+
+    form_values = {"name": "", "cidr_block": "10.0.0.0/16"}
+
+    if request.method == "POST":
+        form_values["name"] = request.POST.get("name", "").strip()
+        form_values["cidr_block"] = request.POST.get("cidr_block", "10.0.0.0/16").strip()
+
+        result = aws.create_vpc(
+            connection,
+            cidr_block=form_values["cidr_block"],
+            name=form_values["name"],
+        )
+
+        if result.get("ok"):
+            messages.success(
+                request,
+                f"VPC '{result.get('vpc_id')}' creation requested.",
+            )
+            return redirect("aws_account")
+
+        messages.error(request, result.get("error", "Could not create the VPC."))
+
+    return render(
+        request,
+        "aws_create_service.html",
+        {
+            "service": "vpc",
+            "title": "Create a VPC",
+            "description": "Set up a virtual private cloud and its IPv4 network range.",
+            "aws_connection": connection,
+            "form_values": form_values,
+        },
+    )
+
+
+@login_required
+def aws_create_iam_user(request):
+    connection = _get_connected_aws(request)
+    if not connection:
+        messages.error(request, "No connected AWS account found.")
+        return redirect("dashboard")
+
+    form_values = {"username": ""}
+
+    if request.method == "POST":
+        form_values["username"] = request.POST.get("username", "").strip()
+        result = aws.create_iam_user(connection, form_values["username"])
+
+        if result.get("ok"):
+            messages.success(
+                request,
+                f"IAM user '{result.get('name', form_values['username'])}' created successfully.",
+            )
+            return redirect("aws_account")
+
+        messages.error(request, result.get("error", "Could not create the IAM user."))
+
+    return render(
+        request,
+        "aws_create_service.html",
+        {
+            "service": "iam",
+            "title": "Create an IAM user",
+            "description": "Add a new IAM identity to your connected AWS account.",
+            "aws_connection": connection,
+            "form_values": form_values,
+        },
+    )
+
+
+@login_required
+def aws_create_cloudwatch_alarm(request):
+    connection = _get_connected_aws(request)
+    if not connection:
+        messages.error(request, "No connected AWS account found.")
+        return redirect("dashboard")
+
+    form_values = {
+        "alarm_name": "",
+        "namespace": "AWS/EC2",
+        "metric_name": "CPUUtilization",
+        "threshold": "80",
+        "comparison_operator": "GreaterThanOrEqualToThreshold",
+        "period": "300",
+        "evaluation_periods": "1",
+        "statistic": "Average",
+        "instance_id": "",
+        "description": "",
+    }
+
+    if request.method == "POST":
+        for key in form_values:
+            if key in request.POST:
+                form_values[key] = request.POST.get(key, "")
+
+        result = aws.create_cloudwatch_alarm(
+            connection,
+            alarm_name=form_values["alarm_name"],
+            namespace=form_values["namespace"],
+            metric_name=form_values["metric_name"],
+            threshold=form_values["threshold"],
+            comparison_operator=form_values["comparison_operator"],
+            period=form_values["period"],
+            evaluation_periods=form_values["evaluation_periods"],
+            statistic=form_values["statistic"],
+            instance_id=form_values["instance_id"] or None,
+            description=form_values["description"] or None,
+        )
+
+        if result.get("ok"):
+            messages.success(
+                request,
+                f"CloudWatch alarm '{result.get('name', form_values['alarm_name'])}' created successfully.",
+            )
+            return redirect("aws_account")
+
+        messages.error(request, result.get("error", "Could not create the CloudWatch alarm."))
+
+    return render(
+        request,
+        "aws_create_service.html",
+        {
+            "service": "cloudwatch",
+            "title": "Create a CloudWatch alarm",
+            "description": "Create a metric alarm for your connected AWS account.",
+            "aws_connection": connection,
+            "form_values": form_values,
+        },
+    )
 
 # =========================================================
 # COMPLETE GOOGLE PROFILE

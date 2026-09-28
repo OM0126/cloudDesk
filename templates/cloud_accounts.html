@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudDesk - Cloud Accounts</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f4f6fa;
+            color: #111827;
+        }
+        a { color: inherit; text-decoration: none; }
+        .layout { min-height: 100vh; display: flex; }
+        .sidebar {
+            width: 248px;
+            background: #101827;
+            color: #e5e7eb;
+            padding: 28px 16px;
+            flex-shrink: 0;
+        }
+        .brand { font-size: 22px; font-weight: 800; padding: 0 8px 30px; }
+        .brand span { color: #3793ff; }
+        .section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #8b95a7;
+            padding: 0 10px 10px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 10px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .nav-item:hover, .nav-item.active { background: #202b3e; }
+        .nav-icon { width: 18px; text-align: center; }
+        .main { flex: 1; padding: 34px; }
+        .page-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+        .page-head h1 { margin: 0 0 6px; font-size: 30px; }
+        .page-head p { margin: 0; color: #667085; }
+        .back-btn, .primary-btn, .secondary-btn {
+            border: 1px solid #d7dde7;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 700;
+            background: #fff;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .primary-btn { background: #111827; color: #fff; border-color: #111827; }
+        .secondary-btn { background: #fff; color: #111827; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e1e6ef;
+            border-radius: 12px;
+            padding: 18px;
+        }
+        .stat-label { color: #667085; font-size: 13px; margin-bottom: 8px; }
+        .stat-value { font-size: 28px; font-weight: 800; }
+        .accounts {
+            display: grid;
+            gap: 16px;
+        }
+        .account-card {
+            background: #fff;
+            border: 1px solid #e1e6ef;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+        }
+        .account-left { display: flex; align-items: center; gap: 16px; min-width: 0; }
+        .cloud-logo {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: #f1f4f8;
+            font-size: 26px;
+            flex-shrink: 0;
+        }
+        .account-title { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+        .account-meta { font-size: 13px; color: #667085; line-height: 1.6; }
+        .account-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 7px;
+            color: #087443;
+            font-size: 12px;
+            font-weight: 800;
+        }
+        .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; }
+        .empty {
+            background: #fff;
+            border: 1px dashed #cfd6e2;
+            border-radius: 10px;
+            padding: 16px;
+            color: #667085;
+            font-size: 13px;
+        }
+        .section-head { margin: 28px 0 12px; }
+        .section-head h2 { margin: 0 0 4px; font-size: 19px; }
+        .section-head p { margin: 0; color: #667085; font-size: 13px; }
+        .coming-soon { border-style: dashed; }
+        .badge {
+            display: inline-flex;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: #eef2f7;
+            color: #667085;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        @media (max-width: 900px) {
+            .sidebar { width: 210px; }
+            .stats { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 700px) {
+            .layout { display: block; }
+            .sidebar { width: auto; }
+            .main { padding: 20px; }
+            .page-head, .account-card { flex-direction: column; align-items: stretch; }
+            .account-actions { justify-content: flex-start; }
+        }
+    </style>
+
+<style id="clouddesk-console-theme">
+:root {
+    --console-navy: #172334;
+    --console-navy-2: #223044;
+    --console-blue: #007eb9;
+    --console-blue-dark: #005a86;
+    --console-orange: #ff9900;
+    --console-orange-dark: #e88b00;
+    --console-bg: #eaeded;
+    --console-panel: #ffffff;
+    --console-border: #d5dbdb;
+    --console-text: #16191f;
+    --console-muted: #5f6b7a;
+    --console-green: #1d8102;
+    --console-red: #c40000;
+}
+
+html, body {
+    background: var(--console-bg) !important;
+    color: var(--console-text) !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+body { font-size: 14px; }
+
+.layout {
+    min-height: 100vh !important;
+    background: var(--console-bg) !important;
+}
+
+/* AWS-console-inspired navigation rail */
+.sidebar {
+    width: 230px !important;
+    background: var(--console-navy) !important;
+    border-right: 1px solid #0f1722 !important;
+    padding: 18px 12px !important;
+    flex-shrink: 0 !important;
+}
+
+.logo, .brand {
+    color: #fff !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    padding: 10px 12px 22px !important;
+}
+.logo span, .brand span { color: #8ed1ff !important; }
+
+.menu-title, .section-title {
+    color: #aab7c4 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: .03em !important;
+}
+
+.menu a, .nav-item {
+    border-radius: 3px !important;
+    color: #e7edf3 !important;
+    min-height: 38px !important;
+    padding: 9px 12px !important;
+    border-left: 3px solid transparent !important;
+    background: transparent !important;
+}
+.menu a:hover, .menu a.active,
+.nav-item:hover, .nav-item.active {
+    background: #2a3a4f !important;
+    border-left-color: var(--console-orange) !important;
+    color: #fff !important;
+}
+
+.sidebar-bottom { padding-top: 18px !important; }
+.logout {
+    color: #d7dee7 !important;
+    border-radius: 3px !important;
+}
+.logout:hover { background: #2a3a4f !important; }
+
+/* Console top bar */
+.console-topbar {
+    height: 56px;
+    margin: -28px -34px 24px -34px;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--console-navy-2);
+    border-bottom: 1px solid #101a26;
+    color: #fff;
+}
+.console-topbar .console-title {
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.console-meta {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    color: #dbe3eb;
+    white-space: nowrap;
+}
+.console-account {
+    padding-left: 14px;
+    border-left: 1px solid #566477;
+}
+
+/* Existing page topbars become compact content headers */
+.main > .topbar:first-of-type {
+    margin-bottom: 18px !important;
+}
+.main > .topbar:first-of-type { display: none !important; }
+.main, .page {
+    color: var(--console-text) !important;
+}
+
+/* Dashboard / page framing */
+.main {
+    padding: 28px 34px 42px !important;
+}
+.topbar-left h1, .page-head h1, .page-header h1 {
+    font-size: 26px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+}
+.topbar-left p, .page-head p, .page-header .subtitle { color: var(--console-muted) !important; }
+
+.welcome-card, .welcome {
+    background: #fff !important;
+    color: var(--console-text) !important;
+    border: 1px solid var(--console-border) !important;
+    border-left: 4px solid var(--console-orange) !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+.welcome-card h2, .welcome h2 { font-size: 20px !important; }
+.welcome-card p, .welcome p { color: var(--console-muted) !important; }
+
+.card, .stat-card, .stat, .account-card, .service-card, .service-box,
+.dashboard-service-section, .dashboard-service-card {
+    background: var(--console-panel) !important;
+    border: 1px solid var(--console-border) !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+
+.stats, .content-grid { gap: 14px !important; }
+.stat-card, .stat { padding: 18px !important; }
+.stat-card h3, .stat-value { font-size: 24px !important; color: #16191f !important; }
+.stat-card p, .stat-label { color: var(--console-muted) !important; }
+.stat-card { border-top: 3px solid #9aa6b2 !important; }
+.stat-card:nth-child(2), .stat:nth-child(2) { border-top-color: var(--console-orange) !important; }
+.stat-card:nth-child(3), .stat:nth-child(3) { border-top-color: var(--console-blue) !important; }
+
+.card-header, .page-head, .service-header, .dashboard-service-section-header {
+    border-bottom-color: var(--console-border) !important;
+}
+
+.button, .primary-btn, .btn-primary, .dashboard-open-button {
+    background: var(--console-orange) !important;
+    border-color: var(--console-orange) !important;
+    color: #16191f !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+.button:hover, .primary-btn:hover, .btn-primary:hover, .dashboard-open-button:hover {
+    background: var(--console-orange-dark) !important;
+    border-color: var(--console-orange-dark) !important;
+}
+.secondary-button, .back-btn, .btn-secondary {
+    background: #fff !important;
+    border-color: #8796a5 !important;
+    color: #202938 !important;
+    border-radius: 3px !important;
+}
+.danger-button, .disconnect-button, .action-btn.danger, .service-action-danger {
+    background: #fff !important;
+    border-color: #d13212 !important;
+    color: #a3210d !important;
+    border-radius: 3px !important;
+}
+
+.status, .badge, .status-pill, .count, .service-count, .dashboard-service-count {
+    border-radius: 2px !important;
+}
+.status.connected, .connected, .status-running, .status-available, .status-active, .status-ok {
+    background: #edf8ed !important;
+    color: var(--console-green) !important;
+}
+.not-connected, .badge { background: #f1f3f3 !important; color: #536273 !important; }
+
+input, select, textarea {
+    border-radius: 3px !important;
+}
+
+.resource-table-wrap { border-radius: 3px !important; }
+.resource-table th {
+    background: #f3f3f3 !important;
+    color: #435261 !important;
+    font-weight: 700 !important;
+}
+.resource-table td { border-bottom-color: #e6eaed !important; }
+.resource-table tbody tr:hover { background: #f7f9fa !important; }
+
+.action-btn, .service-action-btn, .modal-btn, .btn {
+    border-radius: 3px !important;
+}
+.action-btn:hover, .service-action-btn:hover { transform: none !important; }
+
+.empty {
+    border-radius: 3px !important;
+    background: #fafafa !important;
+}
+
+.page-alert, .warning, .flash {
+    border-radius: 3px !important;
+}
+
+.console-link {
+    color: var(--console-blue) !important;
+    text-decoration: none;
+    font-weight: 600;
+}
+.console-link:hover { text-decoration: underline; }
+
+/* Cloud account overview */
+.cloud-account-clickable:hover, .account-card:hover {
+    border-color: #a9b7c6 !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08) !important;
+    transform: none !important;
+}
+
+/* EC2 launch page */
+body > .topbar {
+    background: var(--console-navy) !important;
+    border-bottom: 1px solid #101a26 !important;
+}
+body > .topbar .brand { padding: 0 !important; }
+.region-pill {
+    background: #2a3a4f !important;
+    border-color: #5d6d80 !important;
+}
+.card-head { border-bottom-color: var(--console-border) !important; }
+.ami-option { border-radius: 3px !important; }
+.ami-option.selected { border-color: var(--console-blue) !important; background: #f5fbff !important; }
+.btn-primary { color: #16191f !important; }
+
+@media (max-width: 900px) {
+    .console-topbar { margin-right: -20px; margin-left: -20px; }
+}
+@media (max-width: 760px) {
+    .sidebar { width: 64px !important; }
+    .console-topbar { margin: -20px -14px 18px -14px; padding: 0 12px; }
+    .console-topbar .console-title, .console-account { display: none; }
+}
+</style>
+
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="brand">Cloud<span>Desk</span></div>
+
+        <div class="section-title">Main Menu</div>
+
+        <a class="nav-item" href="{% url 'dashboard' %}">
+            <span class="nav-icon"></span>
+            <span>Dashboard</span>
+        </a>
+
+        <a class="nav-item active" href="{% url 'cloud_accounts' %}">
+            <span class="nav-icon"></span>
+            <span>Cloud Accounts</span>
+        </a>
+
+        <a class="nav-item" href="#">
+            <span class="nav-icon"></span>
+            <span>Alerts</span>
+        </a>
+
+        <a class="nav-item" href="#">
+            <span class="nav-icon"></span>
+            <span>Settings</span>
+        </a>
+    </aside>
+
+    <main class="main">
+    <div class="console-topbar">
+        <div class="console-title">CloudDesk Console</div>
+        <div class="console-meta">
+            <span>Accounts</span>
+            <span class="console-account">Cloud providers</span>
+        </div>
+    </div>
+
+        <div class="page-head">
+            <div>
+                <h1>Cloud Accounts</h1>
+                <p>Manage all cloud providers connected to your CloudDesk workspace.</p>
+            </div>
+            <a class="back-btn" href="{% url 'dashboard' %}">Back to Dashboard</a>
+        </div>
+
+        <div class="section-head">
+            <h2>Connected Accounts</h2>
+            <p>Open a provider workspace to manage its resources.</p>
+        </div>
+
+        <div class="accounts">
+            {% for account in aws_connections %}
+            <div class="account-card">
+                <div class="account-left">
+                    <div class="cloud-logo"></div>
+                    <div>
+                        <div class="status"><span class="status-dot"></span>Connected</div>
+                        <div class="account-title">Amazon Web Services</div>
+                        <div class="account-meta">
+                            {{ account.name }}<br>
+                            Account ID: {{ account.account_id|default:"Not available" }}<br>
+                            Region: {{ account.region }}
+                        </div>
+                    </div>
+                </div>
+                <div class="account-actions">
+                    <a class="primary-btn" href="{% url 'aws_account' %}">Open AWS</a>
+                    <form method="post" action="{% url 'aws_disconnect' %}" style="margin:0;">
+                        {% csrf_token %}
+                        <input type="hidden" name="connection_id" value="{{ account.id }}">
+                        <button class="secondary-btn" type="submit">Disconnect</button>
+                    </form>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty">No AWS account is connected yet.</div>
+            {% endfor %}
+        </div>
+
+        <div class="section-head">
+            <h2>Available Cloud Providers</h2>
+            <p>AWS is active now. Google Cloud Platform (GCP) and Microsoft Azure will be added after the AWS experience is complete.</p>
+        </div>
+
+        <div class="account-card coming-soon">
+            <div class="account-left">
+                <div class="cloud-logo"></div>
+                <div>
+                    <span class="badge">Coming soon</span>
+                    <div class="account-title">Google Cloud Platform (GCP)</div>
+                    <div class="account-meta">GCP account connection and resource management will be added in a future CloudDesk release.</div>
+                </div>
+            </div>
+            <div class="account-actions">
+                <span class="badge">GCP integration</span>
+            </div>
+        </div>
+
+        <div class="account-card coming-soon">
+            <div class="account-left">
+                <div class="cloud-logo"></div>
+                <div>
+                    <span class="badge">Coming soon</span>
+                    <div class="account-title">Microsoft Azure</div>
+                    <div class="account-meta">Azure subscription connection and resource management will be added after the AWS implementation.</div>
+                </div>
+            </div>
+            <div class="account-actions">
+                <span class="badge">Azure integration</span>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

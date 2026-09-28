@@ -322,7 +322,34 @@
             border-bottom: 1px solid #e5e7eb;
         }
 
-        .service-head-row {
+        
+.service-create-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 16px;
+    margin: 0 0 14px;
+    border: 1px solid #d7dde3;
+    background: #fff;
+    border-radius: 3px;
+}
+.service-create-row strong {
+    display: block;
+    color: #16191f;
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+.service-create-row span {
+    display: block;
+    color: #5f6b76;
+    font-size: 12px;
+}
+.service-create-row .button[disabled] {
+    opacity: .55;
+    cursor: not-allowed;
+}
+.service-head-row {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
@@ -373,25 +400,6 @@
             font-weight: 800;
         }
 
-        .search-row {
-            margin-top: 16px;
-        }
-
-        .search {
-            width: 100%;
-            max-width: 420px;
-            height: 40px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 0 12px;
-            outline: none;
-            font-size: 13px;
-        }
-
-        .search:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,.1);
-        }
 
         .service-section {
             padding: 20px 22px;
@@ -756,6 +764,265 @@
             }
         }
     </style>
+
+<style id="clouddesk-console-theme">
+:root {
+    --console-navy: #172334;
+    --console-navy-2: #223044;
+    --console-blue: #007eb9;
+    --console-blue-dark: #005a86;
+    --console-orange: #ff9900;
+    --console-orange-dark: #e88b00;
+    --console-bg: #eaeded;
+    --console-panel: #ffffff;
+    --console-border: #d5dbdb;
+    --console-text: #16191f;
+    --console-muted: #5f6b7a;
+    --console-green: #1d8102;
+    --console-red: #c40000;
+}
+
+html, body {
+    background: var(--console-bg) !important;
+    color: var(--console-text) !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+body { font-size: 14px; }
+
+.layout {
+    min-height: 100vh !important;
+    background: var(--console-bg) !important;
+}
+
+/* AWS-console-inspired navigation rail */
+.sidebar {
+    width: 230px !important;
+    background: var(--console-navy) !important;
+    border-right: 1px solid #0f1722 !important;
+    padding: 18px 12px !important;
+    flex-shrink: 0 !important;
+}
+
+.logo, .brand {
+    color: #fff !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    padding: 10px 12px 22px !important;
+}
+.logo span, .brand span { color: #8ed1ff !important; }
+
+.menu-title, .section-title {
+    color: #aab7c4 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: .03em !important;
+}
+
+.menu a, .nav-item {
+    border-radius: 3px !important;
+    color: #e7edf3 !important;
+    min-height: 38px !important;
+    padding: 9px 12px !important;
+    border-left: 3px solid transparent !important;
+    background: transparent !important;
+}
+.menu a:hover, .menu a.active,
+.nav-item:hover, .nav-item.active {
+    background: #2a3a4f !important;
+    border-left-color: var(--console-orange) !important;
+    color: #fff !important;
+}
+
+.sidebar-bottom { padding-top: 18px !important; }
+.logout {
+    color: #d7dee7 !important;
+    border-radius: 3px !important;
+}
+.logout:hover { background: #2a3a4f !important; }
+
+/* Console top bar */
+.console-topbar {
+    height: 56px;
+    margin: -28px -34px 24px -34px;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--console-navy-2);
+    border-bottom: 1px solid #101a26;
+    color: #fff;
+}
+.console-topbar .console-title {
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.console-meta {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    color: #dbe3eb;
+    white-space: nowrap;
+}
+.console-account {
+    padding-left: 14px;
+    border-left: 1px solid #566477;
+}
+
+/* Existing page topbars become compact content headers */
+.main > .topbar:first-of-type {
+    margin-bottom: 18px !important;
+}
+.main > .topbar:first-of-type { display: none !important; }
+.main, .page {
+    color: var(--console-text) !important;
+}
+
+/* Dashboard / page framing */
+.main {
+    padding: 28px 34px 42px !important;
+}
+.topbar-left h1, .page-head h1, .page-header h1 {
+    font-size: 26px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+}
+.topbar-left p, .page-head p, .page-header .subtitle { color: var(--console-muted) !important; }
+
+.welcome-card, .welcome {
+    background: #fff !important;
+    color: var(--console-text) !important;
+    border: 1px solid var(--console-border) !important;
+    border-left: 4px solid var(--console-orange) !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+.welcome-card h2, .welcome h2 { font-size: 20px !important; }
+.welcome-card p, .welcome p { color: var(--console-muted) !important; }
+
+.card, .stat-card, .stat, .account-card, .service-card, .service-box,
+.dashboard-service-section, .dashboard-service-card {
+    background: var(--console-panel) !important;
+    border: 1px solid var(--console-border) !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+
+.stats, .content-grid { gap: 14px !important; }
+.stat-card, .stat { padding: 18px !important; }
+.stat-card h3, .stat-value { font-size: 24px !important; color: #16191f !important; }
+.stat-card p, .stat-label { color: var(--console-muted) !important; }
+.stat-card { border-top: 3px solid #9aa6b2 !important; }
+.stat-card:nth-child(2), .stat:nth-child(2) { border-top-color: var(--console-orange) !important; }
+.stat-card:nth-child(3), .stat:nth-child(3) { border-top-color: var(--console-blue) !important; }
+
+.card-header, .page-head, .service-header, .dashboard-service-section-header {
+    border-bottom-color: var(--console-border) !important;
+}
+
+.button, .primary-btn, .btn-primary, .dashboard-open-button {
+    background: var(--console-orange) !important;
+    border-color: var(--console-orange) !important;
+    color: #16191f !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+.button:hover, .primary-btn:hover, .btn-primary:hover, .dashboard-open-button:hover {
+    background: var(--console-orange-dark) !important;
+    border-color: var(--console-orange-dark) !important;
+}
+.secondary-button, .back-btn, .btn-secondary {
+    background: #fff !important;
+    border-color: #8796a5 !important;
+    color: #202938 !important;
+    border-radius: 3px !important;
+}
+.danger-button, .disconnect-button, .action-btn.danger, .service-action-danger {
+    background: #fff !important;
+    border-color: #d13212 !important;
+    color: #a3210d !important;
+    border-radius: 3px !important;
+}
+
+.status, .badge, .status-pill, .count, .service-count, .dashboard-service-count {
+    border-radius: 2px !important;
+}
+.status.connected, .connected, .status-running, .status-available, .status-active, .status-ok {
+    background: #edf8ed !important;
+    color: var(--console-green) !important;
+}
+.not-connected, .badge { background: #f1f3f3 !important; color: #536273 !important; }
+
+input, select, textarea {
+    border-radius: 3px !important;
+}
+
+.resource-table-wrap { border-radius: 3px !important; }
+.resource-table th {
+    background: #f3f3f3 !important;
+    color: #435261 !important;
+    font-weight: 700 !important;
+}
+.resource-table td { border-bottom-color: #e6eaed !important; }
+.resource-table tbody tr:hover { background: #f7f9fa !important; }
+
+.action-btn, .service-action-btn, .modal-btn, .btn {
+    border-radius: 3px !important;
+}
+.action-btn:hover, .service-action-btn:hover { transform: none !important; }
+
+.empty {
+    border-radius: 3px !important;
+    background: #fafafa !important;
+}
+
+.page-alert, .warning, .flash {
+    border-radius: 3px !important;
+}
+
+.console-link {
+    color: var(--console-blue) !important;
+    text-decoration: none;
+    font-weight: 600;
+}
+.console-link:hover { text-decoration: underline; }
+
+/* Cloud account overview */
+.cloud-account-clickable:hover, .account-card:hover {
+    border-color: #a9b7c6 !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08) !important;
+    transform: none !important;
+}
+
+/* EC2 launch page */
+body > .topbar {
+    background: var(--console-navy) !important;
+    border-bottom: 1px solid #101a26 !important;
+}
+body > .topbar .brand { padding: 0 !important; }
+.region-pill {
+    background: #2a3a4f !important;
+    border-color: #5d6d80 !important;
+}
+.card-head { border-bottom-color: var(--console-border) !important; }
+.ami-option { border-radius: 3px !important; }
+.ami-option.selected { border-color: var(--console-blue) !important; background: #f5fbff !important; }
+.btn-primary { color: #16191f !important; }
+
+@media (max-width: 900px) {
+    .console-topbar { margin-right: -20px; margin-left: -20px; }
+}
+@media (max-width: 760px) {
+    .sidebar { width: 64px !important; }
+    .console-topbar { margin: -20px -14px 18px -14px; padding: 0 12px; }
+    .console-topbar .console-title, .console-account { display: none; }
+}
+</style>
+
 </head>
 
 <body>
@@ -768,33 +1035,35 @@
         <ul class="menu">
             <li>
                 <a href="{% url 'dashboard' %}">
-                    <span class="menu-icon">▦</span>
+                    <span class="menu-icon"></span>
                     <span>Dashboard</span>
                 </a>
             </li>
             <li>
                 <a href="{% url 'aws_account' %}" class="active">
-                    <span class="menu-icon">☁</span>
+                    <span class="menu-icon"></span>
                     <span>AWS Account</span>
-                </a>
-            </li>
-            <li>
-                <a href="#aws-services">
-                    <span class="menu-icon">⚙</span>
-                    <span>AWS Services</span>
                 </a>
             </li>
         </ul>
 
         <div class="sidebar-bottom">
             <a href="{% url 'logout' %}" class="logout">
-                <span class="menu-icon">↪</span>
+                <span class="menu-icon"></span>
                 <span>Logout</span>
             </a>
         </div>
     </aside>
 
     <main class="main">
+    <div class="console-topbar">
+        <div class="console-title">CloudDesk Console</div>
+        <div class="console-meta">
+            <span>Region: {{ aws_connection.region }}</span>
+            <span class="console-account">{{ aws_connection.account_id }}</span>
+        </div>
+    </div>
+
 
         <div class="topbar">
             <div>
@@ -803,10 +1072,9 @@
             </div>
 
             <div class="topbar-actions">
-                <a href="{% url 'dashboard' %}" class="secondary-button">← Dashboard</a>
+                <a href="{% url 'dashboard' %}" class="secondary-button">Back to Dashboard</a>
 
                 {% if aws_connection %}
-                    <a href="{% url 'aws_ec2_launch' %}" class="button">+ Launch EC2</a>
 
                     <form method="post"
                           action="{% url 'aws_disconnect' %}"
@@ -852,7 +1120,7 @@
 
                 <div class="stat">
                     <div class="stat-label">Connected</div>
-                    <div class="stat-value">● Live</div>
+                    <div class="stat-value"> Live</div>
                 </div>
             </div>
 
@@ -862,7 +1130,7 @@
                         <h2>AWS Account Details</h2>
                         <div class="muted">Connection information for this CloudDesk workspace.</div>
                     </div>
-                    <span class="status connected">● Connected</span>
+                    <span class="status connected"> Connected</span>
                 </div>
 
                 <div class="account-details">
@@ -883,21 +1151,6 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="launch-box">
-                    <div>
-                        <h3>Launch an EC2 Instance</h3>
-                        <p>
-                            Use the CloudDesk EC2 launch wizard. Select an operating system,
-                            instance type, key pair, networking and storage without manually
-                            entering an AMI ID.
-                        </p>
-                    </div>
-
-                    <a href="{% url 'aws_ec2_launch' %}" class="button">Launch EC2 Instance</a>
-                </div>
-            </div>
-
             <div class="service-card" id="aws-services">
 
                 <div class="service-header">
@@ -910,25 +1163,24 @@
                             <div class="muted">Live resources from your connected AWS account.</div>
                         </div>
 
-                        <div class="status connected">● Live</div>
+                        <div class="status connected"> Live</div>
                     </div>
 
-                    <div class="search-row">
-                        <input
-                            id="resourceSearch"
-                            class="search"
-                            type="search"
-                            placeholder="Search resources..."
-                            oninput="filterResources()"
-                        >
-                    </div>
                 </div>
 
                 <!-- EC2 -->
                 <section class="service-section" id="service-ec2">
+                    <div class="service-create-row">
+                        <div>
+                            <strong>Launch an EC2 instance</strong>
+                            <span>Use the EC2 launch wizard to configure and create an instance.</span>
+                        </div>
+                        <a href="{% url 'aws_ec2_launch' %}" class="button">Launch instance</a>
+                    </div>
+
                     <div class="service-head-row" style="margin-bottom:14px;">
                         <div class="service-title">
-                            <div class="service-icon">🖥️</div>
+                            <div class="service-icon"></div>
                             <div>
                                 <h3>EC2</h3>
                                 <p>Instances</p>
@@ -1036,7 +1288,7 @@
                             </div>
                         {% else %}
                             <div class="empty">
-                                <div class="empty-icon">🖥️</div>
+                                <div class="empty-icon"></div>
                                 <strong>No EC2 instances found</strong>
                                 <span>Create your first EC2 instance to get started.</span>
                             </div>
@@ -1048,9 +1300,17 @@
 
                 <!-- S3 -->
                 <section class="service-section" id="service-s3">
+                    <div class="service-create-row">
+                        <div>
+                            <strong>Create an S3 bucket</strong>
+                            <span>Create and configure an object storage bucket from CloudDesk.</span>
+                        </div>
+                        <a href="{% url 'aws_s3_create' %}" class="button">Create bucket</a>
+                    </div>
+
                     <div class="service-head-row" style="margin-bottom:14px;">
                         <div class="service-title">
-                            <div class="service-icon">🪣</div>
+                            <div class="service-icon"></div>
                             <div>
                                 <h3>S3</h3>
                                 <p>Buckets</p>
@@ -1095,7 +1355,7 @@
                             </div>
                         {% else %}
                             <div class="empty">
-                                <div class="empty-icon">🪣</div>
+                                <div class="empty-icon"></div>
                                 <strong>No S3 buckets found</strong>
                                 <span>No buckets are currently available in the connected account.</span>
                             </div>
@@ -1107,9 +1367,17 @@
 
                 <!-- RDS -->
                 <section class="service-section" id="service-rds">
+                    <div class="service-create-row">
+                        <div>
+                            <strong>Create an RDS database</strong>
+                            <span>Configure a managed relational database instance.</span>
+                        </div>
+                        <a href="{% url 'aws_rds_create' %}" class="button">Create database</a>
+                    </div>
+
                     <div class="service-head-row" style="margin-bottom:14px;">
                         <div class="service-title">
-                            <div class="service-icon">🗄️</div>
+                            <div class="service-icon"></div>
                             <div>
                                 <h3>RDS</h3>
                                 <p>Databases</p>
@@ -1180,7 +1448,7 @@
                             </div>
                         {% else %}
                             <div class="empty">
-                                <div class="empty-icon">🗄️</div>
+                                <div class="empty-icon"></div>
                                 <strong>No RDS databases found</strong>
                                 <span>No RDS database instances are currently available.</span>
                             </div>
@@ -1192,9 +1460,17 @@
 
                 <!-- Lambda -->
                 <section class="service-section" id="service-lambda">
+                    <div class="service-create-row">
+                        <div>
+                            <strong>Create a Lambda function</strong>
+                            <span>Configure and deploy a serverless function.</span>
+                        </div>
+                        <a href="{% url 'aws_lambda_create' %}" class="button">Create function</a>
+                    </div>
+
                     <div class="service-head-row" style="margin-bottom:14px;">
                         <div class="service-title">
-                            <div class="service-icon">⚡</div>
+                            <div class="service-icon"></div>
                             <div>
                                 <h3>Lambda</h3>
                                 <p>Functions</p>
@@ -1239,7 +1515,7 @@
                             </div>
                         {% else %}
                             <div class="empty">
-                                <div class="empty-icon">⚡</div>
+                                <div class="empty-icon"></div>
                                 <strong>No Lambda functions found</strong>
                                 <span>No functions are currently available.</span>
                             </div>
@@ -1251,9 +1527,17 @@
 
                 <!-- VPC -->
                 <section class="service-section" id="service-vpc">
+                    <div class="service-create-row">
+                        <div>
+                            <strong>Create a VPC</strong>
+                            <span>Set up a virtual private cloud and its network ranges.</span>
+                        </div>
+                        <a href="{% url 'aws_vpc_create' %}" class="button">Create VPC</a>
+                    </div>
+
                     <div class="service-head-row" style="margin-bottom:14px;">
                         <div class="service-title">
-                            <div class="service-icon">🌐</div>
+                            <div class="service-icon"></div>
                             <div>
                                 <h3>VPC</h3>
                                 <p>Virtual private clouds</p>
@@ -1314,7 +1598,7 @@
                             </div>
                         {% else %}
                             <div class="empty">
-                                <div class="empty-icon">🌐</div>
+                                <div class="empty-icon"></div>
                                 <strong>No VPCs found</strong>
                                 <span>No virtual private clouds are available.</span>
                             </div>
@@ -1326,9 +1610,17 @@
 
                 <!-- IAM -->
                 <section class="service-section" id="service-iam">
+                    <div class="service-create-row">
+                        <div>
+                            <strong>Create an IAM user</strong>
+                            <span>Add a new identity to the connected AWS account.</span>
+                        </div>
+                        <a href="{% url 'aws_iam_create' %}" class="button">Create user</a>
+                    </div>
+
                     <div class="service-head-row" style="margin-bottom:14px;">
                         <div class="service-title">
-                            <div class="service-icon">👤</div>
+                            <div class="service-icon"></div>
                             <div>
                                 <h3>IAM</h3>
                                 <p>Users</p>
@@ -1371,7 +1663,7 @@
                             </div>
                         {% else %}
                             <div class="empty">
-                                <div class="empty-icon">👤</div>
+                                <div class="empty-icon"></div>
                                 <strong>No IAM users found</strong>
                                 <span>No IAM users are currently present.</span>
                             </div>
@@ -1383,9 +1675,17 @@
 
                 <!-- CloudWatch -->
                 <section class="service-section" id="service-cloudwatch">
+                    <div class="service-create-row">
+                        <div>
+                            <strong>Create a CloudWatch alarm</strong>
+                            <span>Set an alarm for a CloudWatch metric.</span>
+                        </div>
+                        <a href="{% url 'aws_cloudwatch_create' %}" class="button">Create alarm</a>
+                    </div>
+
                     <div class="service-head-row" style="margin-bottom:14px;">
                         <div class="service-title">
-                            <div class="service-icon">📈</div>
+                            <div class="service-icon"></div>
                             <div>
                                 <h3>CloudWatch</h3>
                                 <p>Alarms</p>
@@ -1434,7 +1734,7 @@
                             </div>
                         {% else %}
                             <div class="empty">
-                                <div class="empty-icon">📈</div>
+                                <div class="empty-icon"></div>
                                 <strong>No CloudWatch alarms found</strong>
                                 <span>No alarms are currently configured.</span>
                             </div>
@@ -1515,20 +1815,6 @@
         return row ? decodeURIComponent(row.split("=")[1]) : "";
     }
 
-    function filterResources() {
-        const input = document.getElementById("resourceSearch");
-        const query = (input?.value || "").trim().toLowerCase();
-
-        document.querySelectorAll(".filter-group tbody tr").forEach((row) => {
-            const text = (
-                row.getAttribute("data-resource-text") ||
-                row.textContent ||
-                ""
-            ).toLowerCase();
-
-            row.style.display = !query || text.includes(query) ? "" : "none";
-        });
-    }
 
     function openOtpModal(service, action, resourceId, label) {
         pendingAction = {

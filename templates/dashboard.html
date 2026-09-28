@@ -297,7 +297,7 @@
         .content-grid {
             display: grid;
 
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: 1fr;
 
             gap: 20px;
         }
@@ -697,6 +697,18 @@
             cursor: pointer;
         }
 
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #1e3a8a;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
         .disconnect-button:hover {
             background: #fee2e2;
         }
@@ -1039,6 +1051,412 @@
             background: #1f2937;
         }
 
+
+        /* Plain dashboard styling */
+        body {
+            background: #f2f4f7;
+            color: #17202a;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: #111827;
+            padding: 22px 14px;
+            border-right: 1px solid #202938;
+        }
+
+        .logo {
+            font-size: 22px;
+            padding: 8px 10px;
+            margin-bottom: 28px;
+        }
+
+        .menu-title {
+            margin: 0 10px 8px;
+            letter-spacing: .04em;
+        }
+
+        .menu a {
+            border-radius: 6px;
+            padding: 10px 10px;
+            gap: 8px;
+        }
+
+        .menu-icon {
+            display: none;
+        }
+
+        .logout {
+            border-radius: 6px;
+            padding: 10px;
+        }
+
+        .main {
+            padding: 28px 34px;
+        }
+
+        .topbar {
+            margin-bottom: 22px;
+        }
+
+        .topbar-left h1 {
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .topbar-left p {
+            font-size: 13px;
+        }
+
+        .welcome-card {
+            background: #ffffff;
+            color: #17202a;
+            border: 1px solid #dfe4ea;
+            border-left: 3px solid #295fca;
+            border-radius: 6px;
+            padding: 20px 22px;
+            margin-bottom: 16px;
+        }
+
+        .welcome-card h2 {
+            font-size: 19px;
+            margin-bottom: 6px;
+        }
+
+        .welcome-card p {
+            color: #667085;
+            font-size: 13px;
+        }
+
+        .stats {
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            border-radius: 6px;
+            padding: 18px;
+            min-height: 104px;
+            box-shadow: none;
+        }
+
+        .stat-card h3 {
+            font-size: 24px;
+        }
+
+        .content-grid {
+            gap: 16px;
+        }
+
+        .card,
+        .dashboard-service-section {
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: none;
+        }
+
+        .card-header {
+            margin-bottom: 16px;
+        }
+
+        .cloud-account {
+            border-radius: 6px;
+            padding: 14px;
+            margin-bottom: 8px;
+        }
+
+        .cloud-left {
+            gap: 10px;
+        }
+
+        .button,
+        .disconnect-button,
+        .dashboard-open-button,
+        .service-action-btn {
+            border-radius: 5px;
+        }
+
+        .badge {
+            border-radius: 4px;
+        }
+
+        .dashboard-service-cards {
+            gap: 10px;
+        }
+
+        .dashboard-service-card,
+        .service-box {
+            border-radius: 6px;
+        }
+
+        .service-action-btn:hover,
+        .cloud-account-clickable:hover {
+            transform: none;
+        }
+
+        .notification {
+            display: none;
+        }
+
+</style>
+
+
+<style id="clouddesk-console-theme">
+:root {
+    --console-navy: #172334;
+    --console-navy-2: #223044;
+    --console-blue: #007eb9;
+    --console-blue-dark: #005a86;
+    --console-orange: #ff9900;
+    --console-orange-dark: #e88b00;
+    --console-bg: #eaeded;
+    --console-panel: #ffffff;
+    --console-border: #d5dbdb;
+    --console-text: #16191f;
+    --console-muted: #5f6b7a;
+    --console-green: #1d8102;
+    --console-red: #c40000;
+}
+
+html, body {
+    background: var(--console-bg) !important;
+    color: var(--console-text) !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+body { font-size: 14px; }
+
+.layout {
+    min-height: 100vh !important;
+    background: var(--console-bg) !important;
+}
+
+/* AWS-console-inspired navigation rail */
+.sidebar {
+    width: 230px !important;
+    background: var(--console-navy) !important;
+    border-right: 1px solid #0f1722 !important;
+    padding: 18px 12px !important;
+    flex-shrink: 0 !important;
+}
+
+.logo, .brand {
+    color: #fff !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    padding: 10px 12px 22px !important;
+}
+.logo span, .brand span { color: #8ed1ff !important; }
+
+.menu-title, .section-title {
+    color: #aab7c4 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: .03em !important;
+}
+
+.menu a, .nav-item {
+    border-radius: 3px !important;
+    color: #e7edf3 !important;
+    min-height: 38px !important;
+    padding: 9px 12px !important;
+    border-left: 3px solid transparent !important;
+    background: transparent !important;
+}
+.menu a:hover, .menu a.active,
+.nav-item:hover, .nav-item.active {
+    background: #2a3a4f !important;
+    border-left-color: var(--console-orange) !important;
+    color: #fff !important;
+}
+
+.sidebar-bottom { padding-top: 18px !important; }
+.logout {
+    color: #d7dee7 !important;
+    border-radius: 3px !important;
+}
+.logout:hover { background: #2a3a4f !important; }
+
+/* Console top bar */
+.console-topbar {
+    height: 56px;
+    margin: -28px -34px 24px -34px;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--console-navy-2);
+    border-bottom: 1px solid #101a26;
+    color: #fff;
+}
+.console-topbar .console-title {
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.console-meta {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    color: #dbe3eb;
+    white-space: nowrap;
+}
+.console-account {
+    padding-left: 14px;
+    border-left: 1px solid #566477;
+}
+
+/* Existing page topbars become compact content headers */
+.main > .topbar:first-of-type {
+    margin-bottom: 18px !important;
+}
+.main > .topbar:first-of-type { display: none !important; }
+.main, .page {
+    color: var(--console-text) !important;
+}
+
+/* Dashboard / page framing */
+.main {
+    padding: 28px 34px 42px !important;
+}
+.topbar-left h1, .page-head h1, .page-header h1 {
+    font-size: 26px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+}
+.topbar-left p, .page-head p, .page-header .subtitle { color: var(--console-muted) !important; }
+
+.welcome-card, .welcome {
+    background: #fff !important;
+    color: var(--console-text) !important;
+    border: 1px solid var(--console-border) !important;
+    border-left: 4px solid var(--console-orange) !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+.welcome-card h2, .welcome h2 { font-size: 20px !important; }
+.welcome-card p, .welcome p { color: var(--console-muted) !important; }
+
+.card, .stat-card, .stat, .account-card, .service-card, .service-box,
+.dashboard-service-section, .dashboard-service-card {
+    background: var(--console-panel) !important;
+    border: 1px solid var(--console-border) !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+
+.stats, .content-grid { gap: 14px !important; }
+.stat-card, .stat { padding: 18px !important; }
+.stat-card h3, .stat-value { font-size: 24px !important; color: #16191f !important; }
+.stat-card p, .stat-label { color: var(--console-muted) !important; }
+.stat-card { border-top: 3px solid #9aa6b2 !important; }
+.stat-card:nth-child(2), .stat:nth-child(2) { border-top-color: var(--console-orange) !important; }
+.stat-card:nth-child(3), .stat:nth-child(3) { border-top-color: var(--console-blue) !important; }
+
+.card-header, .page-head, .service-header, .dashboard-service-section-header {
+    border-bottom-color: var(--console-border) !important;
+}
+
+.button, .primary-btn, .btn-primary, .dashboard-open-button {
+    background: var(--console-orange) !important;
+    border-color: var(--console-orange) !important;
+    color: #16191f !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+.button:hover, .primary-btn:hover, .btn-primary:hover, .dashboard-open-button:hover {
+    background: var(--console-orange-dark) !important;
+    border-color: var(--console-orange-dark) !important;
+}
+.secondary-button, .back-btn, .btn-secondary {
+    background: #fff !important;
+    border-color: #8796a5 !important;
+    color: #202938 !important;
+    border-radius: 3px !important;
+}
+.danger-button, .disconnect-button, .action-btn.danger, .service-action-danger {
+    background: #fff !important;
+    border-color: #d13212 !important;
+    color: #a3210d !important;
+    border-radius: 3px !important;
+}
+
+.status, .badge, .status-pill, .count, .service-count, .dashboard-service-count {
+    border-radius: 2px !important;
+}
+.status.connected, .connected, .status-running, .status-available, .status-active, .status-ok {
+    background: #edf8ed !important;
+    color: var(--console-green) !important;
+}
+.not-connected, .badge { background: #f1f3f3 !important; color: #536273 !important; }
+
+input, select, textarea {
+    border-radius: 3px !important;
+}
+
+.resource-table-wrap { border-radius: 3px !important; }
+.resource-table th {
+    background: #f3f3f3 !important;
+    color: #435261 !important;
+    font-weight: 700 !important;
+}
+.resource-table td { border-bottom-color: #e6eaed !important; }
+.resource-table tbody tr:hover { background: #f7f9fa !important; }
+
+.action-btn, .service-action-btn, .modal-btn, .btn {
+    border-radius: 3px !important;
+}
+.action-btn:hover, .service-action-btn:hover { transform: none !important; }
+
+.empty {
+    border-radius: 3px !important;
+    background: #fafafa !important;
+}
+
+.page-alert, .warning, .flash {
+    border-radius: 3px !important;
+}
+
+.console-link {
+    color: var(--console-blue) !important;
+    text-decoration: none;
+    font-weight: 600;
+}
+.console-link:hover { text-decoration: underline; }
+
+/* Cloud account overview */
+.cloud-account-clickable:hover, .account-card:hover {
+    border-color: #a9b7c6 !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08) !important;
+    transform: none !important;
+}
+
+/* EC2 launch page */
+body > .topbar {
+    background: var(--console-navy) !important;
+    border-bottom: 1px solid #101a26 !important;
+}
+body > .topbar .brand { padding: 0 !important; }
+.region-pill {
+    background: #2a3a4f !important;
+    border-color: #5d6d80 !important;
+}
+.card-head { border-bottom-color: var(--console-border) !important; }
+.ami-option { border-radius: 3px !important; }
+.ami-option.selected { border-color: var(--console-blue) !important; background: #f5fbff !important; }
+.btn-primary { color: #16191f !important; }
+
+@media (max-width: 900px) {
+    .console-topbar { margin-right: -20px; margin-left: -20px; }
+}
+@media (max-width: 760px) {
+    .sidebar { width: 64px !important; }
+    .console-topbar { margin: -20px -14px 18px -14px; padding: 0 12px; }
+    .console-topbar .console-title, .console-account { display: none; }
+}
 </style>
 
 </head>
@@ -1070,32 +1488,28 @@
 
             <li>
                 <a href="{% url 'dashboard' %}" class="active">
-                    <span class="menu-icon">⌂</span>
-                    <span>Dashboard</span>
+<span>Dashboard</span>
+                </a>
+            </li>
+
+
+            <li>
+                <a href="{% url 'cloud_accounts' %}">
+<span>Cloud Accounts</span>
                 </a>
             </li>
 
 
             <li>
                 <a href="#">
-                    <span class="menu-icon">☁</span>
-                    <span>Cloud Accounts</span>
+<span>Alerts</span>
                 </a>
             </li>
 
 
             <li>
                 <a href="#">
-                    <span class="menu-icon">🔔</span>
-                    <span>Alerts</span>
-                </a>
-            </li>
-
-
-            <li>
-                <a href="#">
-                    <span class="menu-icon">⚙</span>
-                    <span>Settings</span>
+<span>Settings</span>
                 </a>
             </li>
 
@@ -1105,7 +1519,7 @@
         <div class="sidebar-bottom">
 
             <a href="{% url 'logout' %}" class="logout">
-                <span>🚪 Logout</span>
+                <span> Logout</span>
             </a>
 
         </div>
@@ -1119,6 +1533,13 @@
     ========================================== -->
 
     <main class="main">
+    <div class="console-topbar">
+        <div class="console-title">CloudDesk Console</div>
+        <div class="console-meta">
+            <span class="console-account">{{ profile.email }}</span>
+        </div>
+    </div>
+
 
 
         <!-- TOP BAR -->
@@ -1136,19 +1557,6 @@
             </div>
 
 
-            <div class="profile-mini">
-
-                <div class="notification">
-                    🔔
-                </div>
-
-
-                <div class="avatar">
-                    {{ profile.name|first }}
-                </div>
-
-            </div>
-
         </div>
 
 
@@ -1162,7 +1570,7 @@
         <div class="welcome-card">
 
             <h2>
-                Welcome back, {{ profile.name }} 👋
+                Welcome back, {{ profile.name }} 
             </h2>
 
             <p>
@@ -1181,12 +1589,7 @@
 
 
             <div class="stat-card">
-
-                <div class="stat-icon">
-                    ☁️
-                </div>
-
-                <h3>
+<h3>
                     {{ total_cloud_accounts }}
                 </h3>
 
@@ -1199,12 +1602,7 @@
 
 
             <div class="stat-card">
-
-                <div class="stat-icon">
-                    🟠
-                </div>
-
-                <h3>
+<h3>
                     {{ cloud_accounts.aws }}
                 </h3>
 
@@ -1214,22 +1612,18 @@
 
             </div>
 
-
-
-
-
             <div class="stat-card">
 
                 <div class="stat-icon">
-                    🟢
+                    Pending
                 </div>
 
                 <h3>
-                    {{ cloud_accounts.gcp }}
+                    2
                 </h3>
 
                 <p>
-                    Google Cloud Accounts
+                    Upcoming cloud providers
                 </p>
 
             </div>
@@ -1277,13 +1671,7 @@
                          title="Open AWS account management">
 
                         <div class="cloud-left">
-
-                            <div class="cloud-icon">
-                                ☁️
-                            </div>
-
-
-                            <div>
+<div>
 
                                 <div class="cloud-name">
                                     Amazon Web Services
@@ -1345,61 +1733,46 @@
 
                     </div>
 
-
-
-                    <!-- GCP -->
+                    <!-- GOOGLE CLOUD - COMING SOON -->
 
                     <div class="cloud-account">
 
                         <div class="cloud-left">
-
-                            <div class="cloud-icon">
-                                🟢
-                            </div>
-
-
-                            <div>
-
+<div>
                                 <div class="cloud-name">
-                                    Google Cloud Platform
+                                    Google Cloud Platform (GCP)
                                 </div>
 
                                 <div class="cloud-info">
-                                    {% if gcp_connection %}
-                                        Project ID: {{ gcp_connection.project_id }}
-                                    {% else %}
-                                        Ready to connect
-                                    {% endif %}
+                                    Coming soon
                                 </div>
-
                             </div>
 
                         </div>
 
+                        <span class="badge">Coming soon</span>
 
-                        
-                                {% if gcp_connection %}
-                            <form
-                                method="post"
-                                action="{% url 'gcp_disconnect' %}"
-                                class="disconnect-form"
-                                onsubmit="return confirm('Disconnect this GCP project from CloudDesk? This will not delete GCP resources.');"
-                            >
-                                {% csrf_token %}
-                                <input
-                                    type="hidden"
-                                    name="connection_id"
-                                    value="{{ gcp_connection.id }}"
-                                >
-                                <button type="submit" class="disconnect-button">
-                                    Disconnect
-                                </button>
-                            </form>
-                        {% else %}
-                            <a href="{% url 'gcp_connect' %}" class="button">
-                                Connect
-                            </a>
-                        {% endif %}
+                    </div>
+
+
+                    <!-- AZURE - COMING SOON -->
+
+                    <div class="cloud-account">
+
+                        <div class="cloud-left">
+<div>
+                                <div class="cloud-name">
+                                    Microsoft Azure
+                                </div>
+
+                                <div class="cloud-info">
+                                    Coming soon
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <span class="badge">Coming soon</span>
 
                     </div>
 
@@ -1428,7 +1801,7 @@
 
                         <div class="dashboard-service-card">
                             <div class="dashboard-service-card-header">
-                                <h4>🖥️ EC2 Instances</h4>
+                                <h4> EC2 Instances</h4>
                                 {% if aws_summary.ec2.ok %}
                                     <span class="dashboard-service-count">
                                         {{ aws_summary.ec2.data|length }}
@@ -1455,7 +1828,7 @@
 
                         <div class="dashboard-service-card">
                             <div class="dashboard-service-card-header">
-                                <h4>🪣 S3 Buckets</h4>
+                                <h4> S3 Buckets</h4>
                                 {% if aws_summary.s3.ok %}
                                     <span class="dashboard-service-count">
                                         {{ aws_summary.s3.data|length }}
@@ -1482,7 +1855,7 @@
 
                         <div class="dashboard-service-card">
                             <div class="dashboard-service-card-header">
-                                <h4>🗄️ RDS Databases</h4>
+                                <h4> RDS Databases</h4>
                                 {% if aws_summary.rds.ok %}
                                     <span class="dashboard-service-count">
                                         {{ aws_summary.rds.data|length }}
@@ -1509,7 +1882,7 @@
 
                         <div class="dashboard-service-card">
                             <div class="dashboard-service-card-header">
-                                <h4>⚡ Lambda Functions</h4>
+                                <h4> Lambda Functions</h4>
                                 {% if aws_summary.lambda.ok %}
                                     <span class="dashboard-service-count">
                                         {{ aws_summary.lambda.data|length }}
@@ -1536,7 +1909,7 @@
 
                         <div class="dashboard-service-card">
                             <div class="dashboard-service-card-header">
-                                <h4>🌐 VPCs</h4>
+                                <h4> VPCs</h4>
                                 {% if aws_summary.vpc.ok %}
                                     <span class="dashboard-service-count">
                                         {{ aws_summary.vpc.data|length }}
@@ -1563,7 +1936,7 @@
 
                         <div class="dashboard-service-card">
                             <div class="dashboard-service-card-header">
-                                <h4>👤 IAM Users</h4>
+                                <h4> IAM Users</h4>
                                 {% if aws_summary.iam.ok %}
                                     <span class="dashboard-service-count">
                                         {{ aws_summary.iam.data|length }}
@@ -1590,7 +1963,7 @@
 
                         <div class="dashboard-service-card">
                             <div class="dashboard-service-card-header">
-                                <h4>📈 CloudWatch Alarms</h4>
+                                <h4> CloudWatch Alarms</h4>
                                 {% if aws_summary.cloudwatch.ok %}
                                     <span class="dashboard-service-count">
                                         {{ aws_summary.cloudwatch.data|length }}
@@ -1620,210 +1993,25 @@
 
                 {% endif %}
 
-
-                {% if gcp_connection %}
-
                 <div class="dashboard-service-section">
                     <div class="dashboard-service-section-header">
-                        <h2>Google Cloud Platform</h2>
-                        <a href="{% url 'gcp_connect' %}" class="dashboard-open-button">
-                            GCP Connection
-                        </a>
-                    </div>
-
-                    <div class="dashboard-service-cards">
-
-                        <div class="dashboard-service-card">
-                            <div class="dashboard-service-card-header">
-                                <h4>🖥️ Compute Engine</h4>
-                                {% if gcp_summary.compute.ok %}
-                                    <span class="dashboard-service-count">{{ gcp_summary.compute.data|length }}</span>
-                                {% endif %}
-                            </div>
-                            {% if gcp_summary.compute.ok %}
-                                {% if gcp_summary.compute.data %}
-                                    <ul class="dashboard-service-list">
-                                        {% for item in gcp_summary.compute.data %}
-                                            <li>
-                                                <span class="dashboard-service-item-name">{{ item.name }}</span>
-                                                <span class="dashboard-service-item-meta">{{ item.zone }}</span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    <div class="dashboard-service-empty">No Compute Engine instances found.</div>
-                                {% endif %}
-                            {% else %}
-                                <div class="dashboard-service-error">{{ gcp_summary.compute.error }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="dashboard-service-card">
-                            <div class="dashboard-service-card-header">
-                                <h4>🪣 Cloud Storage</h4>
-                                {% if gcp_summary.storage.ok %}
-                                    <span class="dashboard-service-count">{{ gcp_summary.storage.data|length }}</span>
-                                {% endif %}
-                            </div>
-                            {% if gcp_summary.storage.ok %}
-                                {% if gcp_summary.storage.data %}
-                                    <ul class="dashboard-service-list">
-                                        {% for item in gcp_summary.storage.data %}
-                                            <li>
-                                                <span class="dashboard-service-item-name">{{ item.name }}</span>
-                                                <span class="dashboard-service-item-meta">{{ item.location }}</span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    <div class="dashboard-service-empty">No Cloud Storage buckets found.</div>
-                                {% endif %}
-                            {% else %}
-                                <div class="dashboard-service-error">{{ gcp_summary.storage.error }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="dashboard-service-card">
-                            <div class="dashboard-service-card-header">
-                                <h4>🗄️ Cloud SQL</h4>
-                                {% if gcp_summary.sql.ok %}
-                                    <span class="dashboard-service-count">{{ gcp_summary.sql.data|length }}</span>
-                                {% endif %}
-                            </div>
-                            {% if gcp_summary.sql.ok %}
-                                {% if gcp_summary.sql.data %}
-                                    <ul class="dashboard-service-list">
-                                        {% for item in gcp_summary.sql.data %}
-                                            <li>
-                                                <span class="dashboard-service-item-name">{{ item.name }}</span>
-                                                <span class="dashboard-service-item-meta">{{ item.state }}</span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    <div class="dashboard-service-empty">No Cloud SQL instances found.</div>
-                                {% endif %}
-                            {% else %}
-                                <div class="dashboard-service-error">{{ gcp_summary.sql.error }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="dashboard-service-card">
-                            <div class="dashboard-service-card-header">
-                                <h4>⚡ Cloud Functions</h4>
-                                {% if gcp_summary.functions.ok %}
-                                    <span class="dashboard-service-count">{{ gcp_summary.functions.data|length }}</span>
-                                {% endif %}
-                            </div>
-                            {% if gcp_summary.functions.ok %}
-                                {% if gcp_summary.functions.data %}
-                                    <ul class="dashboard-service-list">
-                                        {% for item in gcp_summary.functions.data %}
-                                            <li>
-                                                <span class="dashboard-service-item-name">{{ item.name }}</span>
-                                                <span class="dashboard-service-item-meta">{{ item.state }}</span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    <div class="dashboard-service-empty">No Cloud Functions found.</div>
-                                {% endif %}
-                            {% else %}
-                                <div class="dashboard-service-error">{{ gcp_summary.functions.error }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="dashboard-service-card">
-                            <div class="dashboard-service-card-header">
-                                <h4>🌐 VPC Networks</h4>
-                                {% if gcp_summary.vpc.ok %}
-                                    <span class="dashboard-service-count">{{ gcp_summary.vpc.data|length }}</span>
-                                {% endif %}
-                            </div>
-                            {% if gcp_summary.vpc.ok %}
-                                {% if gcp_summary.vpc.data %}
-                                    <ul class="dashboard-service-list">
-                                        {% for item in gcp_summary.vpc.data %}
-                                            <li>
-                                                <span class="dashboard-service-item-name">{{ item.name }}</span>
-                                                <span class="dashboard-service-item-meta">{{ item.cidr }}</span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    <div class="dashboard-service-empty">No VPC networks found.</div>
-                                {% endif %}
-                            {% else %}
-                                <div class="dashboard-service-error">{{ gcp_summary.vpc.error }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="dashboard-service-card">
-                            <div class="dashboard-service-card-header">
-                                <h4>👤 IAM Service Accounts</h4>
-                                {% if gcp_summary.iam.ok %}
-                                    <span class="dashboard-service-count">{{ gcp_summary.iam.data|length }}</span>
-                                {% endif %}
-                            </div>
-                            {% if gcp_summary.iam.ok %}
-                                {% if gcp_summary.iam.data %}
-                                    <ul class="dashboard-service-list">
-                                        {% for item in gcp_summary.iam.data %}
-                                            <li>
-                                                <span class="dashboard-service-item-name">{{ item.name }}</span>
-                                                <span class="dashboard-service-item-meta">{{ item.email }}</span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    <div class="dashboard-service-empty">No IAM service accounts found.</div>
-                                {% endif %}
-                            {% else %}
-                                <div class="dashboard-service-error">{{ gcp_summary.iam.error }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="dashboard-service-card">
-                            <div class="dashboard-service-card-header">
-                                <h4>📈 Cloud Monitoring</h4>
-                                {% if gcp_summary.monitoring.ok %}
-                                    <span class="dashboard-service-count">{{ gcp_summary.monitoring.data|length }}</span>
-                                {% endif %}
-                            </div>
-                            {% if gcp_summary.monitoring.ok %}
-                                {% if gcp_summary.monitoring.data %}
-                                    <ul class="dashboard-service-list">
-                                        {% for item in gcp_summary.monitoring.data %}
-                                            <li>
-                                                <span class="dashboard-service-item-name">{{ item.name }}</span>
-                                                <span class="dashboard-service-item-meta">{{ item.state }}</span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    <div class="dashboard-service-empty">No monitoring alert policies found.</div>
-                                {% endif %}
-                            {% else %}
-                                <div class="dashboard-service-error">{{ gcp_summary.monitoring.error }}</div>
-                            {% endif %}
-                        </div>
-
-                    </div>
-                </div>
-
-                {% else %}
-
-                <div class="dashboard-service-section">
-                    <div class="dashboard-service-section-header">
-                        <h2>Google Cloud Platform</h2>
-                        <a href="{% url 'gcp_connect' %}" class="dashboard-open-button">Connect GCP</a>
+                        <h2>Google Cloud Platform (GCP)</h2>
+                        <span class="badge">Coming soon</span>
                     </div>
                     <div class="dashboard-service-empty">
-                        Connect a GCP project to see its services here.
+                        Google Cloud Platform (GCP) is planned after the AWS work is complete.
                     </div>
                 </div>
 
-                {% endif %}
+                <div class="dashboard-service-section">
+                    <div class="dashboard-service-section-header">
+                        <h2>Microsoft Azure</h2>
+                        <span class="badge">Coming soon</span>
+                    </div>
+                    <div class="dashboard-service-empty">
+                        Microsoft Azure is planned after the AWS work is complete.
+                    </div>
+                </div>
 
             </div>
 
@@ -1834,61 +2022,6 @@
             <div>
 
 
-                <!-- PROFILE -->
-
-                <div class="card">
-
-                    <div class="card-header">
-
-                        <h2>
-                            Profile
-                        </h2>
-
-                    </div>
-
-
-                    <div class="profile-row">
-
-                        <span class="profile-label">
-                            Name
-                        </span>
-
-                        <span class="profile-value">
-                            {{ profile.name }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="profile-row">
-
-                        <span class="profile-label">
-                            Username
-                        </span>
-
-                        <span class="profile-value">
-                            {{ profile.username }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="profile-row">
-
-                        <span class="profile-label">
-                            Email
-                        </span>
-
-                        <span class="profile-value">
-                            {{ profile.email }}
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-
                 <!-- ALERTS -->
 
                 <div class="card">
@@ -1896,7 +2029,7 @@
                     <div class="card-header">
 
                         <h2>
-                            🔔 Alerts
+                             Alerts
                         </h2>
 
                         <span>
@@ -1927,7 +2060,7 @@
                     {% else %}
 
                         <div class="no-alerts">
-                            ✓ No new alerts
+                             No new alerts
                         </div>
 
                     {% endif %}

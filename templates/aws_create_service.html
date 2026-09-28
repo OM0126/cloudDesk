@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudDesk - {{ title }}</title>
+    <style>
+        :root {
+            --navy: #172334;
+            --navy-2: #223044;
+            --orange: #ff9900;
+            --orange-dark: #e88b00;
+            --bg: #eaeded;
+            --panel: #ffffff;
+            --border: #d5dbdb;
+            --text: #16191f;
+            --muted: #5f6b7a;
+            --blue: #007eb9;
+            --green: #1d8102;
+            --red: #c40000;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            min-height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        a { color: inherit; }
+
+        .layout {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 230px;
+            flex-shrink: 0;
+            background: var(--navy);
+            border-right: 1px solid #0f1722;
+            padding: 18px 12px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            padding: 10px 12px 22px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .logo span { color: #8ed1ff; }
+
+        .menu-title {
+            color: #aab7c4;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .03em;
+            text-transform: uppercase;
+            padding: 0 12px 8px;
+        }
+
+        .menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu li { margin: 2px 0; }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            min-height: 38px;
+            padding: 9px 12px;
+            border-left: 3px solid transparent;
+            border-radius: 3px;
+            color: #e7edf3;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #2a3a4f;
+            border-left-color: var(--orange);
+            color: #fff;
+        }
+
+        .sidebar-bottom { margin-top: auto; padding-top: 18px; }
+
+        .logout {
+            display: block;
+            padding: 9px 12px;
+            border-radius: 3px;
+            color: #d7dee7;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .logout:hover { background: #2a3a4f; }
+
+        .main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .console-topbar {
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 0 20px;
+            background: var(--navy-2);
+            border-bottom: 1px solid #101a26;
+            color: #fff;
+        }
+
+        .console-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .console-path {
+            color: #b8c4d0;
+            font-size: 12px;
+        }
+
+        .console-meta {
+            margin-left: auto;
+            color: #dbe3eb;
+            font-size: 12px;
+        }
+
+        .content {
+            padding: 28px 34px 50px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 18px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 6px;
+            font-size: 26px;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .button,
+        .secondary-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            padding: 9px 15px;
+            border-radius: 3px;
+            border: 1px solid;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .button {
+            background: var(--orange);
+            color: #16191f;
+            border-color: var(--orange);
+        }
+
+        .button:hover {
+            background: var(--orange-dark);
+            border-color: var(--orange-dark);
+        }
+
+        .secondary-button {
+            background: #fff;
+            color: #202938;
+            border-color: #8796a5;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            margin-bottom: 16px;
+        }
+
+        .panel-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-header h2 {
+            margin: 0 0 4px;
+            font-size: 18px;
+        }
+
+        .panel-header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .form-body { padding: 20px; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .form-group { margin-bottom: 16px; }
+        .form-grid .form-group { margin-bottom: 0; }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #aab7c4;
+            border-radius: 3px;
+            background: #fff;
+            color: var(--text);
+            padding: 9px 10px;
+            font: inherit;
+            font-size: 13px;
+            outline: none;
+        }
+
+        textarea {
+            min-height: 220px;
+            resize: vertical;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            line-height: 1.45;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 2px rgba(0,126,185,.12);
+        }
+
+        .help {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding-top: 4px;
+        }
+
+        .checkbox-row input {
+            width: auto;
+            margin-top: 2px;
+        }
+
+        .notice {
+            margin-bottom: 18px;
+            padding: 12px 14px;
+            border: 1px solid #e5b35b;
+            background: #fff8e7;
+            color: #5f4a23;
+            border-radius: 3px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .error-list {
+            margin-bottom: 16px;
+            padding: 12px 14px;
+            border: 1px solid #e8b5b5;
+            background: #fff5f5;
+            color: #9b1c1c;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            background: #f8f9fa;
+        }
+
+        .service-note {
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-left: 3px solid var(--blue);
+            background: #f5fbff;
+            color: #35556a;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 800px) {
+            .sidebar { width: 64px; }
+            .logo { font-size: 0; text-align: center; }
+            .logo span { font-size: 20px; }
+            .menu-title,
+            .menu a { font-size: 0; }
+            .menu a { justify-content: center; }
+            .menu a::after { content: attr(aria-label); font-size: 12px; }
+            .content { padding: 20px 14px 40px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .page-header { flex-direction: column; }
+            .console-path { display: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="logo">Cloud<span>Desk</span></div>
+        <div class="menu-title">Workspace</div>
+        <ul class="menu">
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'aws_account' %}" class="active" aria-label="AWS Account">AWS Account</a></li>
+        </ul>
+        <div class="sidebar-bottom">
+            <a href="{% url 'logout' %}" class="logout">Logout</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="console-topbar">
+            <div class="console-title">CloudDesk Console</div>
+            <div class="console-path">AWS / {{ title }}</div>
+            <div class="console-meta">Region: {{ aws_connection.region }}</div>
+        </div>
+
+        <div class="content">
+            <div class="page-header">
+                <div>
+                    <h1>{{ title }}</h1>
+                    <p>{{ description }}</p>
+                </div>
+                <a href="{% url 'aws_account' %}" class="secondary-button">Back to AWS</a>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="error-list">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {% if service == "s3" %}
+                <form method="post" class="panel">
+                    {% csrf_token %}
+                    <div class="panel-header">
+                        <h2>Bucket configuration</h2>
+                        <p>S3 bucket names are globally unique and must follow AWS naming rules.</p>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label for="bucket_name">Bucket name</label>
+                            <input id="bucket_name" name="bucket_name" required maxlength="63" value="{{ form_values.bucket_name|default:'' }}" placeholder="clouddesk-example-bucket">
+                            <div class="help">Use lowercase letters, numbers, dots and hyphens. Choose a globally unique name.</div>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <a href="{% url 'aws_account' %}" class="secondary-button">Cancel</a>
+                        <button type="submit" class="button">Create bucket</button>
+                    </div>
+                </form>
+            {% endif %}
+
+            {% if service == "rds" %}
+                <div class="notice">RDS databases create billable resources. Review the engine, instance class and storage before submitting.</div>
+                <form method="post" class="panel">
+                    {% csrf_token %}
+                    <div class="panel-header">
+                        <h2>Database configuration</h2>
+                        <p>CloudDesk creates a single RDS database instance using the connected AWS Region.</p>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="db_identifier">DB instance identifier</label>
+                                <input id="db_identifier" name="db_identifier" required maxlength="63" value="{{ form_values.db_identifier|default:'' }}" placeholder="clouddesk-db">
+                            </div>
+                            <div class="form-group">
+                                <label for="engine">Engine</label>
+                                <select id="engine" name="engine">
+                                    <option value="mysql" {% if form_values.engine == 'mysql' %}selected{% endif %}>MySQL</option>
+                                    <option value="postgres" {% if form_values.engine == 'postgres' %}selected{% endif %}>PostgreSQL</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="instance_class">Instance class</label>
+                                <select id="instance_class" name="instance_class">
+                                    <option value="db.t3.micro" {% if form_values.instance_class == 'db.t3.micro' %}selected{% endif %}>db.t3.micro</option>
+                                    <option value="db.t3.small" {% if form_values.instance_class == 'db.t3.small' %}selected{% endif %}>db.t3.small</option>
+                                    <option value="db.t4g.micro" {% if form_values.instance_class == 'db.t4g.micro' %}selected{% endif %}>db.t4g.micro</option>
+                                    <option value="db.t4g.small" {% if form_values.instance_class == 'db.t4g.small' %}selected{% endif %}>db.t4g.small</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="allocated_storage">Allocated storage (GiB)</label>
+                                <input id="allocated_storage" type="number" name="allocated_storage" min="20" max="65536" value="{{ form_values.allocated_storage|default:'20' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="db_name">Initial database name</label>
+                                <input id="db_name" name="db_name" value="{{ form_values.db_name|default:'' }}" placeholder="appdb">
+                            </div>
+                            <div class="form-group">
+                                <label for="master_username">Master username</label>
+                                <input id="master_username" name="master_username" required value="{{ form_values.master_username|default:'admin' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="master_password">Master password</label>
+                                <input id="master_password" type="password" name="master_password" required autocomplete="new-password">
+                                <div class="help">The password is sent to AWS for creation and is not stored by CloudDesk.</div>
+                            </div>
+                            <div class="form-group checkbox-row">
+                                <input id="publicly_accessible" type="checkbox" name="publicly_accessible" {% if form_values.publicly_accessible %}checked{% endif %}>
+                                <label for="publicly_accessible">Allow public accessibility</label>
+                            </div>
+                        </div>
+                        <div class="service-note">For a first implementation, CloudDesk uses the AWS account's standard networking configuration. Private subnet groups, security groups and Multi-AZ will be added to the advanced RDS flow later.</div>
+                    </div>
+                    <div class="actions">
+                        <a href="{% url 'aws_account' %}" class="secondary-button">Cancel</a>
+                        <button type="submit" class="button">Create database</button>
+                    </div>
+                </form>
+            {% endif %}
+
+            {% if service == "lambda" %}
+                <form method="post" class="panel">
+                    {% csrf_token %}
+                    <div class="panel-header">
+                        <h2>Function configuration</h2>
+                        <p>Create and publish a Lambda function from source code entered below.</p>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="function_name">Function name</label>
+                                <input id="function_name" name="function_name" required value="{{ form_values.function_name|default:'' }}" placeholder="clouddesk-function">
+                            </div>
+                            <div class="form-group">
+                                <label for="runtime">Runtime</label>
+                                <select id="runtime" name="runtime">
+                                    <option value="python3.12" {% if form_values.runtime == 'python3.12' %}selected{% endif %}>Python 3.12</option>
+                                    <option value="python3.11" {% if form_values.runtime == 'python3.11' %}selected{% endif %}>Python 3.11</option>
+                                    <option value="python3.10" {% if form_values.runtime == 'python3.10' %}selected{% endif %}>Python 3.10</option>
+                                    <option value="nodejs22.x" {% if form_values.runtime == 'nodejs22.x' %}selected{% endif %}>Node.js 22</option>
+                                    <option value="nodejs20.x" {% if form_values.runtime == 'nodejs20.x' %}selected{% endif %}>Node.js 20</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="handler">Handler</label>
+                                <input id="handler" name="handler" value="{{ form_values.handler|default:'lambda_function.lambda_handler' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="role_arn">Execution role ARN</label>
+                                <input id="role_arn" name="role_arn" value="{{ form_values.role_arn|default:'' }}" required placeholder="arn:aws:iam::123456789012:role/service-role/...">
+                                <div class="help">The role must already exist and trust the Lambda service.</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="memory_size">Memory (MB)</label>
+                                <input id="memory_size" type="number" name="memory_size" min="128" max="10240" value="{{ form_values.memory_size|default:'128' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="timeout">Timeout (seconds)</label>
+                                <input id="timeout" type="number" name="timeout" min="1" max="900" value="{{ form_values.timeout|default:'10' }}">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top:16px;">
+                            <label for="source_code">Function source code</label>
+                            <textarea id="source_code" name="source_code" spellcheck="false" required>{{ form_values.source_code|default:'' }}</textarea>
+                            <div class="help">For Python, the source is packaged as <code>lambda_function.py</code>. For Node.js, it is packaged as <code>index.js</code>.</div>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <a href="{% url 'aws_account' %}" class="secondary-button">Cancel</a>
+                        <button type="submit" class="button">Create function</button>
+                    </div>
+                </form>
+            {% endif %}
+
+            {% if service == "vpc" %}
+                <form method="post" class="panel">
+                    {% csrf_token %}
+                    <div class="panel-header">
+                        <h2>VPC configuration</h2>
+                        <p>Create a new IPv4 VPC in the connected AWS Region.</p>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="name">VPC name</label>
+                                <input id="name" name="name" value="{{ form_values.name|default:'' }}" placeholder="clouddesk-vpc">
+                            </div>
+                            <div class="form-group">
+                                <label for="cidr_block">IPv4 CIDR block</label>
+                                <input id="cidr_block" name="cidr_block" required value="{{ form_values.cidr_block|default:'10.0.0.0/16' }}" placeholder="10.0.0.0/16">
+                            </div>
+                        </div>
+                        <div class="service-note">Creating a VPC does not automatically create subnets, route tables, gateways or security groups. Those networking components will be added as separate CloudDesk actions.</div>
+                    </div>
+                    <div class="actions">
+                        <a href="{% url 'aws_account' %}" class="secondary-button">Cancel</a>
+                        <button type="submit" class="button">Create VPC</button>
+                    </div>
+                </form>
+            {% endif %}
+
+            {% if service == "iam" %}
+                <form method="post" class="panel">
+                    {% csrf_token %}
+                    <div class="panel-header">
+                        <h2>IAM user configuration</h2>
+                        <p>Create an IAM user. Permissions and access keys remain separate security controls.</p>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label for="username">User name</label>
+                            <input id="username" name="username" required maxlength="64" value="{{ form_values.username|default:'' }}" placeholder="clouddesk-user">
+                        </div>
+                        <div class="service-note">This creates the IAM identity only. CloudDesk will not automatically attach broad administrator permissions or create long-lived access keys.</div>
+                    </div>
+                    <div class="actions">
+                        <a href="{% url 'aws_account' %}" class="secondary-button">Cancel</a>
+                        <button type="submit" class="button">Create user</button>
+                    </div>
+                </form>
+            {% endif %}
+
+            {% if service == "cloudwatch" %}
+                <form method="post" class="panel">
+                    {% csrf_token %}
+                    <div class="panel-header">
+                        <h2>Alarm configuration</h2>
+                        <p>Create a CloudWatch metric alarm. For EC2 CPU alarms, provide an instance ID to scope the metric.</p>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="alarm_name">Alarm name</label>
+                                <input id="alarm_name" name="alarm_name" required value="{{ form_values.alarm_name|default:'' }}" placeholder="clouddesk-high-cpu">
+                            </div>
+                            <div class="form-group">
+                                <label for="namespace">Namespace</label>
+                                <input id="namespace" name="namespace" required value="{{ form_values.namespace|default:'AWS/EC2' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="metric_name">Metric name</label>
+                                <input id="metric_name" name="metric_name" required value="{{ form_values.metric_name|default:'CPUUtilization' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="instance_id">EC2 instance ID (optional)</label>
+                                <input id="instance_id" name="instance_id" value="{{ form_values.instance_id|default:'' }}" placeholder="i-0123456789abcdef0">
+                            </div>
+                            <div class="form-group">
+                                <label for="statistic">Statistic</label>
+                                <select id="statistic" name="statistic">
+                                    <option value="Average" {% if form_values.statistic == 'Average' %}selected{% endif %}>Average</option>
+                                    <option value="Minimum" {% if form_values.statistic == 'Minimum' %}selected{% endif %}>Minimum</option>
+                                    <option value="Maximum" {% if form_values.statistic == 'Maximum' %}selected{% endif %}>Maximum</option>
+                                    <option value="Sum" {% if form_values.statistic == 'Sum' %}selected{% endif %}>Sum</option>
+                                    <option value="SampleCount" {% if form_values.statistic == 'SampleCount' %}selected{% endif %}>Sample count</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="comparison_operator">Comparison</label>
+                                <select id="comparison_operator" name="comparison_operator">
+                                    <option value="GreaterThanOrEqualToThreshold" {% if form_values.comparison_operator == 'GreaterThanOrEqualToThreshold' %}selected{% endif %}>Greater than or equal to</option>
+                                    <option value="GreaterThanThreshold" {% if form_values.comparison_operator == 'GreaterThanThreshold' %}selected{% endif %}>Greater than</option>
+                                    <option value="LessThanThreshold" {% if form_values.comparison_operator == 'LessThanThreshold' %}selected{% endif %}>Less than</option>
+                                    <option value="LessThanOrEqualToThreshold" {% if form_values.comparison_operator == 'LessThanOrEqualToThreshold' %}selected{% endif %}>Less than or equal to</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="threshold">Threshold</label>
+                                <input id="threshold" type="number" step="any" name="threshold" required value="{{ form_values.threshold|default:'80' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="period">Period (seconds)</label>
+                                <select id="period" name="period">
+                                    <option value="60" {% if form_values.period == '60' %}selected{% endif %}>60 seconds</option>
+                                    <option value="300" {% if form_values.period == '300' %}selected{% endif %}>300 seconds</option>
+                                    <option value="600" {% if form_values.period == '600' %}selected{% endif %}>600 seconds</option>
+                                    <option value="900" {% if form_values.period == '900' %}selected{% endif %}>900 seconds</option>
+                                    <option value="1800" {% if form_values.period == '1800' %}selected{% endif %}>1800 seconds</option>
+                                    <option value="3600" {% if form_values.period == '3600' %}selected{% endif %}>3600 seconds</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="evaluation_periods">Evaluation periods</label>
+                                <input id="evaluation_periods" type="number" name="evaluation_periods" min="1" max="10" value="{{ form_values.evaluation_periods|default:'1' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <input id="description" name="description" value="{{ form_values.description|default:'' }}" placeholder="CPU utilization threshold">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <a href="{% url 'aws_account' %}" class="secondary-button">Cancel</a>
+                        <button type="submit" class="button">Create alarm</button>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+    </main>
+</div>
+</body>
+</html>

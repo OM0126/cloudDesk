@@ -130,6 +130,24 @@
         }
         .ami-option:hover { border-color: #5d7fa3; background: #fbfdff; }
         .ami-option.selected { border: 2px solid #0073bb; padding: 13px; background: #f5fbff; }
+        .ami-option.disabled { cursor: not-allowed; opacity: .72; background: #f5f6f7; }
+        .ami-option.disabled:hover { border-color: #aab3bf; background: #f5f6f7; }
+        .key-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+        .btn-small { white-space: nowrap; padding: 10px 13px; }
+        .modal-backdrop {
+            display: none; position: fixed; inset: 0; background: rgba(15, 23, 34, .58);
+            align-items: center; justify-content: center; z-index: 100; padding: 20px;
+        }
+        .modal-backdrop.open { display: flex; }
+        .modal-card { width: min(520px, 100%); background: #fff; border: 1px solid #c9d1d8; border-radius: 6px; box-shadow: 0 12px 36px rgba(0,0,0,.22); }
+        .modal-head { padding: 16px 18px; border-bottom: 1px solid #e1e5e8; display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+        .modal-head h3 { margin: 0; font-size: 17px; }
+        .modal-close { border: 0; background: transparent; font-size: 20px; cursor: pointer; color: #5f6b7a; }
+        .modal-body { padding: 18px; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+        .modal-note { margin-top: 10px; color: #5f6b7a; font-size: 12px; line-height: 1.5; }
+        .modal-error { display: none; margin-bottom: 12px; }
+        .download-note { display: none; margin-top: 12px; background: #edf8ed; border: 1px solid #a8d8b1; color: #185c24; padding: 10px; border-radius: 3px; font-size: 12px; line-height: 1.5; }
         .ami-option input { display: none; }
         .ami-title { font-weight: 700; font-size: 14px; }
         .ami-desc { margin-top: 6px; color: #5f6b7a; font-size: 12px; line-height: 1.45; }
@@ -238,18 +256,277 @@
             .region-pill { display: none; }
         }
     </style>
+
+<style id="clouddesk-console-theme">
+:root {
+    --console-navy: #172334;
+    --console-navy-2: #223044;
+    --console-blue: #007eb9;
+    --console-blue-dark: #005a86;
+    --console-orange: #ff9900;
+    --console-orange-dark: #e88b00;
+    --console-bg: #eaeded;
+    --console-panel: #ffffff;
+    --console-border: #d5dbdb;
+    --console-text: #16191f;
+    --console-muted: #5f6b7a;
+    --console-green: #1d8102;
+    --console-red: #c40000;
+}
+
+html, body {
+    background: var(--console-bg) !important;
+    color: var(--console-text) !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+body { font-size: 14px; }
+
+.layout {
+    min-height: 100vh !important;
+    background: var(--console-bg) !important;
+}
+
+/* AWS-console-inspired navigation rail */
+.sidebar {
+    width: 230px !important;
+    background: var(--console-navy) !important;
+    border-right: 1px solid #0f1722 !important;
+    padding: 18px 12px !important;
+    flex-shrink: 0 !important;
+}
+
+.logo, .brand {
+    color: #fff !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    padding: 10px 12px 22px !important;
+}
+.logo span, .brand span { color: #8ed1ff !important; }
+
+.menu-title, .section-title {
+    color: #aab7c4 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: .03em !important;
+}
+
+.menu a, .nav-item {
+    border-radius: 3px !important;
+    color: #e7edf3 !important;
+    min-height: 38px !important;
+    padding: 9px 12px !important;
+    border-left: 3px solid transparent !important;
+    background: transparent !important;
+}
+.menu a:hover, .menu a.active,
+.nav-item:hover, .nav-item.active {
+    background: #2a3a4f !important;
+    border-left-color: var(--console-orange) !important;
+    color: #fff !important;
+}
+
+.sidebar-bottom { padding-top: 18px !important; }
+.logout {
+    color: #d7dee7 !important;
+    border-radius: 3px !important;
+}
+.logout:hover { background: #2a3a4f !important; }
+
+/* Console top bar */
+.console-topbar {
+    height: 56px;
+    margin: -28px -34px 24px -34px;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--console-navy-2);
+    border-bottom: 1px solid #101a26;
+    color: #fff;
+}
+.console-topbar .console-title {
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.console-meta {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    color: #dbe3eb;
+    white-space: nowrap;
+}
+.console-account {
+    padding-left: 14px;
+    border-left: 1px solid #566477;
+}
+
+/* Existing page topbars become compact content headers */
+.main > .topbar:first-of-type {
+    margin-bottom: 18px !important;
+}
+.main > .topbar:first-of-type { display: none !important; }
+.main, .page {
+    color: var(--console-text) !important;
+}
+
+/* Dashboard / page framing */
+.main {
+    padding: 28px 34px 42px !important;
+}
+.topbar-left h1, .page-head h1, .page-header h1 {
+    font-size: 26px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+}
+.topbar-left p, .page-head p, .page-header .subtitle { color: var(--console-muted) !important; }
+
+.welcome-card, .welcome {
+    background: #fff !important;
+    color: var(--console-text) !important;
+    border: 1px solid var(--console-border) !important;
+    border-left: 4px solid var(--console-orange) !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+.welcome-card h2, .welcome h2 { font-size: 20px !important; }
+.welcome-card p, .welcome p { color: var(--console-muted) !important; }
+
+.card, .stat-card, .stat, .account-card, .service-card, .service-box,
+.dashboard-service-section, .dashboard-service-card {
+    background: var(--console-panel) !important;
+    border: 1px solid var(--console-border) !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+
+.stats, .content-grid { gap: 14px !important; }
+.stat-card, .stat { padding: 18px !important; }
+.stat-card h3, .stat-value { font-size: 24px !important; color: #16191f !important; }
+.stat-card p, .stat-label { color: var(--console-muted) !important; }
+.stat-card { border-top: 3px solid #9aa6b2 !important; }
+.stat-card:nth-child(2), .stat:nth-child(2) { border-top-color: var(--console-orange) !important; }
+.stat-card:nth-child(3), .stat:nth-child(3) { border-top-color: var(--console-blue) !important; }
+
+.card-header, .page-head, .service-header, .dashboard-service-section-header {
+    border-bottom-color: var(--console-border) !important;
+}
+
+.button, .primary-btn, .btn-primary, .dashboard-open-button {
+    background: var(--console-orange) !important;
+    border-color: var(--console-orange) !important;
+    color: #16191f !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+.button:hover, .primary-btn:hover, .btn-primary:hover, .dashboard-open-button:hover {
+    background: var(--console-orange-dark) !important;
+    border-color: var(--console-orange-dark) !important;
+}
+.secondary-button, .back-btn, .btn-secondary {
+    background: #fff !important;
+    border-color: #8796a5 !important;
+    color: #202938 !important;
+    border-radius: 3px !important;
+}
+.danger-button, .disconnect-button, .action-btn.danger, .service-action-danger {
+    background: #fff !important;
+    border-color: #d13212 !important;
+    color: #a3210d !important;
+    border-radius: 3px !important;
+}
+
+.status, .badge, .status-pill, .count, .service-count, .dashboard-service-count {
+    border-radius: 2px !important;
+}
+.status.connected, .connected, .status-running, .status-available, .status-active, .status-ok {
+    background: #edf8ed !important;
+    color: var(--console-green) !important;
+}
+.not-connected, .badge { background: #f1f3f3 !important; color: #536273 !important; }
+
+input, select, textarea {
+    border-radius: 3px !important;
+}
+
+.resource-table-wrap { border-radius: 3px !important; }
+.resource-table th {
+    background: #f3f3f3 !important;
+    color: #435261 !important;
+    font-weight: 700 !important;
+}
+.resource-table td { border-bottom-color: #e6eaed !important; }
+.resource-table tbody tr:hover { background: #f7f9fa !important; }
+
+.action-btn, .service-action-btn, .modal-btn, .btn {
+    border-radius: 3px !important;
+}
+.action-btn:hover, .service-action-btn:hover { transform: none !important; }
+
+.empty {
+    border-radius: 3px !important;
+    background: #fafafa !important;
+}
+
+.page-alert, .warning, .flash {
+    border-radius: 3px !important;
+}
+
+.console-link {
+    color: var(--console-blue) !important;
+    text-decoration: none;
+    font-weight: 600;
+}
+.console-link:hover { text-decoration: underline; }
+
+/* Cloud account overview */
+.cloud-account-clickable:hover, .account-card:hover {
+    border-color: #a9b7c6 !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08) !important;
+    transform: none !important;
+}
+
+/* EC2 launch page */
+body > .topbar {
+    background: var(--console-navy) !important;
+    border-bottom: 1px solid #101a26 !important;
+}
+body > .topbar .brand { padding: 0 !important; }
+.region-pill {
+    background: #2a3a4f !important;
+    border-color: #5d6d80 !important;
+}
+.card-head { border-bottom-color: var(--console-border) !important; }
+.ami-option { border-radius: 3px !important; }
+.ami-option.selected { border-color: var(--console-blue) !important; background: #f5fbff !important; }
+.btn-primary { color: #16191f !important; }
+
+@media (max-width: 900px) {
+    .console-topbar { margin-right: -20px; margin-left: -20px; }
+}
+@media (max-width: 760px) {
+    .sidebar { width: 64px !important; }
+    .console-topbar { margin: -20px -14px 18px -14px; padding: 0 12px; }
+    .console-topbar .console-title, .console-account { display: none; }
+}
+</style>
+
 </head>
 <body>
     <header class="topbar">
         <div class="brand">Cloud<span>Desk</span></div>
-        <div class="crumbs">AWS &nbsp;›&nbsp; EC2 &nbsp;›&nbsp; Launch an instance</div>
+        <div class="crumbs">AWS / EC2 / Launch an instance</div>
         <div class="region-pill">Region: {{ aws_connection.region }}</div>
     </header>
 
     <main class="page">
         <div class="page-header">
             <div>
-                <a class="back-link" href="{% url 'aws_account' %}">← Back to AWS account</a>
+                <a class="back-link" href="{% url 'aws_account' %}">Back to AWS account</a>
                 <h1>Launch an instance</h1>
                 <div class="subtitle">Configure an Amazon EC2 instance in your connected AWS account.</div>
                 <div class="account-line">Account <strong>{{ aws_connection.name }}</strong> · ID <strong>{{ aws_connection.account_id|default:"—" }}</strong></div>
@@ -263,7 +540,7 @@
         {% endif %}
 
         {% if ami_error %}
-            <div class="error">CloudDesk could not load Quick Start AMIs: {{ ami_error }}</div>
+            <div class="error">CloudDesk could not load operating system AMIs: {{ ami_error }}</div>
         {% endif %}
 
         {% if discovery_errors %}
@@ -310,16 +587,19 @@
                             <span class="badge">Quick Start</span>
                         </div>
                         <div class="card-body">
-                            <div class="ami-tabs">
-                                <button type="button" class="ami-tab active">Quick Start</button>
-                                <button type="button" class="ami-tab" disabled>My AMIs</button>
-                                <button type="button" class="ami-tab" disabled>Marketplace</button>
-                            </div>
+                            <input type="hidden" name="os_slug" id="os_slug" value="{% if ami_options %}{{ ami_options.0.slug }}{% endif %}">
 
                             {% if ami_options %}
                                 <div class="ami-grid">
                                     {% for ami in ami_options %}
-                                        <label class="ami-option {% if forloop.first %}selected{% endif %}" data-image-id="{{ ami.image_id }}">
+                                        <label
+                                            class="ami-option {% if forloop.first %}selected{% endif %}{% if ami.slug == 'macos' %} macos-option{% endif %}"
+                                            data-image-id="{{ ami.image_id }}"
+                                            data-os-slug="{{ ami.slug }}"
+                                            data-architecture="{{ ami.architecture }}"
+                                            data-platform="{{ ami.platform }}"
+                                            data-launch-supported="{% if ami.slug == 'macos' %}false{% else %}true{% endif %}"
+                                        >
                                             <input type="radio" name="ami_choice" value="{{ ami.image_id }}" {% if forloop.first %}checked{% endif %}>
                                             <div class="ami-title">{{ ami.label }}</div>
                                             <div class="ami-desc">{{ ami.description }}</div>
@@ -327,8 +607,9 @@
                                         </label>
                                     {% endfor %}
                                 </div>
+                                <div class="hint" style="margin-top:12px;">AMI IDs are resolved for the connected AWS Region.</div>
                             {% else %}
-                                <div class="error" style="margin:0;">No Quick Start AMIs were returned for this AWS region. Refresh the page or verify the connected AWS credentials have <strong>ec2:DescribeImages</strong> permission.</div>
+                                <div class="error" style="margin:0;">No supported operating system AMIs were returned for this AWS region. Refresh the page or verify the connected AWS credentials have <strong>ec2:DescribeImages</strong> permission.</div>
                             {% endif %}
                         </div>
                     </section>
@@ -345,14 +626,25 @@
                                 <div class="field">
                                     <label for="instance_type">Instance type</label>
                                     <select id="instance_type" name="instance_type">
-                                        <option value="t3.micro" selected>t3.micro — 2 vCPU · 1 GiB</option>
-                                        <option value="t3.small">t3.small — 2 vCPU · 2 GiB</option>
-                                        <option value="t3.medium">t3.medium — 2 vCPU · 4 GiB</option>
-                                        <option value="t3.large">t3.large — 2 vCPU · 8 GiB</option>
-                                        <option value="t4g.micro">t4g.micro — 2 vCPU · 1 GiB (ARM)</option>
-                                        <option value="t4g.small">t4g.small — 2 vCPU · 2 GiB (ARM)</option>
-                                        <option value="m7i-flex.large">m7i-flex.large — 2 vCPU · 8 GiB</option>
-                                        <option value="c7i-flex.large">c7i-flex.large — 2 vCPU · 4 GiB</option>
+                                        <optgroup label="General purpose">
+                                            <option value="t3.micro" selected>t3.micro — 2 vCPU · 1 GiB</option>
+                                            <option value="t3.small">t3.small — 2 vCPU · 2 GiB</option>
+                                            <option value="t3.medium">t3.medium — 2 vCPU · 4 GiB</option>
+                                            <option value="t3.large">t3.large — 2 vCPU · 8 GiB</option>
+                                            <option value="t4g.micro">t4g.micro — 2 vCPU · 1 GiB (ARM)</option>
+                                            <option value="t4g.small">t4g.small — 2 vCPU · 2 GiB (ARM)</option>
+                                            <option value="m7i-flex.large">m7i-flex.large — 2 vCPU · 8 GiB</option>
+                                            <option value="c7i-flex.large">c7i-flex.large — 2 vCPU · 4 GiB</option>
+                                        </optgroup>
+                                        <optgroup label="Mac">
+                                            <option value="mac1.metal">mac1.metal — Intel Mac</option>
+                                            <option value="mac2.metal">mac2.metal — Apple M1</option>
+                                            <option value="mac2-m1ultra.metal">mac2-m1ultra.metal — Apple M1 Ultra</option>
+                                            <option value="mac2-m2.metal">mac2-m2.metal — Apple M2</option>
+                                            <option value="mac2-m2pro.metal">mac2-m2pro.metal — Apple M2 Pro</option>
+                                            <option value="mac-m4.metal">mac-m4.metal — Apple M4</option>
+                                            <option value="mac-m4pro.metal">mac-m4pro.metal — Apple M4 Pro</option>
+                                        </optgroup>
                                     </select>
                                 </div>
                                 <div class="field">
@@ -374,16 +666,24 @@
                         <div class="card-body">
                             <div class="field">
                                 <label for="key_name">Key pair name</label>
-                                <select id="key_name" name="key_name">
-                                    <option value="">Proceed without a key pair (not recommended)</option>
-                                    {% for key in ec2_key_pairs %}
-                                        <option value="{{ key.name }}">{{ key.name }}</option>
-                                    {% endfor %}
-                                </select>
-                                <div class="hint">CloudDesk does not create a private key file for you. Use an existing AWS key pair you already control.</div>
+                                <div class="key-row">
+                                    <select id="key_name" name="key_name">
+                                        <option value="">Proceed without a key pair</option>
+                                        {% for key in ec2_key_pairs %}
+                                            <option value="{{ key.name }}">{{ key.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="button" class="btn btn-small" id="openKeyModal">Create key pair</button>
+                                </div>
+                                <div class="hint">Create a new AWS key pair without leaving CloudDesk. The private key is downloaded once and is not stored by CloudDesk.</div>
+                                <div class="download-note" id="downloadNote"></div>
                             </div>
                         </div>
                     </section>
+
+                    <div class="warning" id="macWarning" style="display:none;">
+                        macOS EC2 instances require an AWS Dedicated Host. CloudDesk shows macOS here, but Mac host allocation and launch support will be added before this option can be launched from this page.
+                    </div>
 
                     <section class="card">
                         <div class="card-head">
@@ -517,6 +817,34 @@
         </form>
     </main>
 
+    <div class="modal-backdrop" id="keyModal" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="keyModalTitle">
+            <div class="modal-head">
+                <h3 id="keyModalTitle">Create a new key pair</h3>
+                <button type="button" class="modal-close" id="closeKeyModal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-error error" id="keyModalError"></div>
+                <div class="field">
+                    <label for="newKeyName">Key pair name</label>
+                    <input type="text" id="newKeyName" maxlength="255" placeholder="CloudDesk-key-01">
+                </div>
+                <div class="field">
+                    <label for="newKeyType">Key type</label>
+                    <select id="newKeyType">
+                        <option value="rsa" selected>RSA — works with Linux and Windows</option>
+                        <option value="ed25519">ED25519 — Linux only</option>
+                    </select>
+                </div>
+                <div class="modal-note">AWS returns the private key only when the key pair is created. Download it immediately and keep it somewhere safe.</div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelKeyModal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="createKeyBtn">Create and download</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const form = document.getElementById('launchForm');
         const nameInput = document.getElementById('name');
@@ -527,7 +855,11 @@
         const volumeSize = document.getElementById('volume_size');
         const volumeType = document.getElementById('volume_type');
         const imageHidden = document.getElementById('image_id');
+        const osSlug = document.getElementById('os_slug');
         const publicIp = document.querySelector('input[name="associate_public_ip"]');
+        const architecture = document.getElementById('architecture');
+        const macWarning = document.getElementById('macWarning');
+        const launchButton = document.getElementById('launchBtn');
         const sumName = document.getElementById('sumName');
         const sumCount = document.getElementById('sumCount');
         const sumAmi = document.getElementById('sumAmi');
@@ -547,15 +879,41 @@
             sumPublicIp.textContent = publicIp.checked ? 'Enabled' : 'Disabled';
         }
 
+        function updateOsSelection(card) {
+            document.querySelectorAll('.ami-option[data-image-id]').forEach(item => item.classList.remove('selected'));
+            card.classList.add('selected');
+
+            const radio = card.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+
+            imageHidden.value = card.dataset.imageId || '';
+            osSlug.value = card.dataset.osSlug || '';
+            sumAmi.textContent = card.querySelector('.ami-title')?.textContent.trim() || 'Selected';
+
+            const isMac = osSlug.value === 'macos';
+            macWarning.style.display = isMac ? 'block' : 'none';
+
+            if (isMac) {
+                const macOption = Array.from(typeInput.options).find(option => option.value === 'mac2.metal');
+                if (macOption) typeInput.value = macOption.value;
+                architecture.value = card.dataset.architecture || 'arm64_mac';
+                launchButton.disabled = true;
+                launchButton.title = 'Dedicated Host support is required for macOS instances.';
+                launchButton.style.opacity = '.65';
+                launchButton.style.cursor = 'not-allowed';
+            } else {
+                architecture.value = card.dataset.architecture || 'x86_64';
+                launchButton.disabled = false;
+                launchButton.title = '';
+                launchButton.style.opacity = '';
+                launchButton.style.cursor = '';
+            }
+
+            updateSummary();
+        }
+
         document.querySelectorAll('.ami-option[data-image-id]').forEach(card => {
-            card.addEventListener('click', () => {
-                document.querySelectorAll('.ami-option[data-image-id]').forEach(item => item.classList.remove('selected'));
-                card.classList.add('selected');
-                const radio = card.querySelector('input[type="radio"]');
-                if (radio) radio.checked = true;
-                imageHidden.value = card.dataset.imageId || '';
-                sumAmi.textContent = card.querySelector('.ami-title')?.textContent.trim() || 'Selected';
-            });
+            card.addEventListener('click', () => updateOsSelection(card));
         });
 
         nameInput.addEventListener('input', updateSummary);
@@ -580,7 +938,105 @@
             updateSummary();
         });
 
+        const keyModal = document.getElementById('keyModal');
+        const openKeyModal = document.getElementById('openKeyModal');
+        const closeKeyModal = document.getElementById('closeKeyModal');
+        const cancelKeyModal = document.getElementById('cancelKeyModal');
+        const createKeyBtn = document.getElementById('createKeyBtn');
+        const newKeyName = document.getElementById('newKeyName');
+        const newKeyType = document.getElementById('newKeyType');
+        const keyModalError = document.getElementById('keyModalError');
+        const downloadNote = document.getElementById('downloadNote');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        function showKeyModal() {
+            keyModal.classList.add('open');
+            keyModal.setAttribute('aria-hidden', 'false');
+            keyModalError.style.display = 'none';
+            newKeyName.focus();
+        }
+
+        function hideKeyModal() {
+            keyModal.classList.remove('open');
+            keyModal.setAttribute('aria-hidden', 'true');
+        }
+
+        openKeyModal.addEventListener('click', showKeyModal);
+        closeKeyModal.addEventListener('click', hideKeyModal);
+        cancelKeyModal.addEventListener('click', hideKeyModal);
+        keyModal.addEventListener('click', event => {
+            if (event.target === keyModal) hideKeyModal();
+        });
+
+        createKeyBtn.addEventListener('click', async () => {
+            const keyName = newKeyName.value.trim();
+            if (!keyName) {
+                keyModalError.textContent = 'Enter a key pair name.';
+                keyModalError.style.display = 'block';
+                return;
+            }
+
+            createKeyBtn.disabled = true;
+            createKeyBtn.textContent = 'Creating...';
+            keyModalError.style.display = 'none';
+
+            try {
+                const body = new URLSearchParams({
+                    csrfmiddlewaretoken: csrfToken,
+                    key_name: keyName,
+                    key_type: newKeyType.value,
+                });
+
+                const response = await fetch("{% url 'create_ec2_key_pair' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                    },
+                    body,
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.ok) {
+                    throw new Error(data.error || 'Could not create the key pair.');
+                }
+
+                const option = new Option(data.name, data.name, true, true);
+                keyInput.add(option);
+                keyInput.value = data.name;
+                updateSummary();
+
+                const blob = new Blob([data.key_material || ''], { type: 'application/x-pem-file' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${data.name}.pem`;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                URL.revokeObjectURL(url);
+
+                downloadNote.textContent = `Key pair ${data.name} was created and downloaded. AWS will not show the private key again.`;
+                downloadNote.style.display = 'block';
+                newKeyName.value = '';
+                hideKeyModal();
+            } catch (error) {
+                keyModalError.textContent = error.message;
+                keyModalError.style.display = 'block';
+            } finally {
+                createKeyBtn.disabled = false;
+                createKeyBtn.textContent = 'Create and download';
+            }
+        });
+
         form.addEventListener('submit', event => {
+            if (osSlug.value === 'macos') {
+                event.preventDefault();
+                alert('macOS EC2 instances require a Dedicated Host. CloudDesk will add Mac host launch support before this can be launched here.');
+                return;
+            }
+
             if (!imageHidden.value) {
                 event.preventDefault();
                 alert('Please select an operating system image first.');
