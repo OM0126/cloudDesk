@@ -26,7 +26,7 @@ jobs:
           context: .
           push: true
           tags: om0126/cloud_app:latest
-
+          
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -37,4 +37,7 @@ jobs:
             sudo docker pull om0126/cloud_app:latest
             sudo docker stop cloud_app || true
             sudo docker rm cloud_app || true
-            sudo docker run -d --name cloud_app -p 8000:8000 om0126/cloud_app:latest
+            sudo docker run -d --name cloud_app \
+              -p 8000:8000 \
+              -e DJANGO_SECRET_KEY="production-super-secret-key-change-me" \
+              om0126/cloud_app:latest
