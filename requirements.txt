@@ -1,1 +1,5 @@
 Django==6.1
+boto3
+django-allauth
+python-dotenv
+requests
