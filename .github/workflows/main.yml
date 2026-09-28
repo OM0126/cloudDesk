@@ -26,3 +26,28 @@ jobs:
           context: .
           push: true
           tags: om0126/cloud_app:latest
+
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: docker build -t om0126/2048-django-devops:latest .
+
+      - name: Push Docker image
+        run: docker push om0126/2048-django-devops:latest
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker pull om0126/2048-django-devops:latest
+          docker stop 2048-app || true
+          docker rm 2048-app || true
+          docker run -d --name 2048-app -p 8000:8000 om0126/2048-django-devops:latest
