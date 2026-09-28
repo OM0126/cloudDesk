@@ -1,55 +1,127 @@
-name: Build and Push Docker Image
+name: Build, Push and Deploy CloudDesk
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
 
- 
-      - name: Log in to Docker Hub
+      - name: Check required secrets
+        env:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+        run: |
+          test -n "$DJANGO_SECRET_KEY" || {
+            echo "DJANGO_SECRET_KEY is missing"
+            exit 1
+          }
+
+          test -n "$GOOGLE_CLIENT_ID" || {
+            echo "GOOGLE_CLIENT_ID is missing"
+            exit 1
+          }
+
+          test -n "$GOOGLE_CLIENT_SECRET" || {
+            echo "GOOGLE_CLIENT_SECRET is missing"
+            exit 1
+          }
+
+          echo "Required secrets are present."
+
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and Push Image
+      - name: Build and push CloudDesk
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: om0126/cloud_app:latest
+          tags: |
+            om0126/cloud_app:latest
+            om0126/cloud_app:${{ github.sha }}
 
-   
-      - name: Deploy to EC2
+      - name: Deploy CloudDesk to EC2
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+          EMAIL_USE_TLS: ${{ secrets.EMAIL_USE_TLS }}
+          EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+          EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+
+          envs: >
+            DJANGO_SECRET_KEY,
+            DJANGO_DEBUG,
+            GOOGLE_CLIENT_ID,
+            GOOGLE_CLIENT_SECRET,
+            EMAIL_HOST,
+            EMAIL_PORT,
+            EMAIL_USE_TLS,
+            EMAIL_HOST_USER,
+            EMAIL_HOST_PASSWORD
+
           script: |
+            set -e
+
+            test -n "$DJANGO_SECRET_KEY" || {
+              echo "DJANGO_SECRET_KEY was not passed to EC2"
+              exit 1
+            }
+
+            echo "Pulling CloudDesk image..."
             sudo docker pull om0126/cloud_app:latest
+
+            echo "Stopping old container..."
             sudo docker stop cloud_app || true
+
+            echo "Removing old container..."
             sudo docker rm cloud_app || true
+
+            echo "Starting CloudDesk..."
+
             sudo docker run -d \
               --name cloud_app \
               --restart unless-stopped \
               -p 8000:8000 \
-              -e DJANGO_SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" \
-              -e DJANGO_DEBUG="${{ secrets.DJANGO_DEBUG }}" \
-              -e GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID }}" \
-              -e GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}" \
-              -e EMAIL_HOST="${{ secrets.EMAIL_HOST }}" \
-              -e EMAIL_PORT="${{ secrets.EMAIL_PORT }}" \
-              -e EMAIL_USE_TLS="${{ secrets.EMAIL_USE_TLS }}" \
-              -e EMAIL_HOST_USER="${{ secrets.EMAIL_HOST_USER }}" \
-              -e EMAIL_HOST_PASSWORD="${{ secrets.EMAIL_HOST_PASSWORD }}" \
+              -e DJANGO_SECRET_KEY="$DJANGO_SECRET_KEY" \
+              -e DJANGO_DEBUG="$DJANGO_DEBUG" \
+              -e GOOGLE_CLIENT_ID="$GOOGLE_CLIENT_ID" \
+              -e GOOGLE_CLIENT_SECRET="$GOOGLE_CLIENT_SECRET" \
+              -e EMAIL_HOST="$EMAIL_HOST" \
+              -e EMAIL_PORT="$EMAIL_PORT" \
+              -e EMAIL_USE_TLS="$EMAIL_USE_TLS" \
+              -e EMAIL_HOST_USER="$EMAIL_HOST_USER" \
+              -e EMAIL_HOST_PASSWORD="$EMAIL_HOST_PASSWORD" \
               om0126/cloud_app:latest
+
+            echo "Waiting for CloudDesk..."
+            sleep 8
+
+            echo "Container status:"
+            sudo docker ps
+
+            echo "CloudDesk logs:"
+            sudo docker logs --tail 50 cloud_app
