@@ -11,7 +11,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -26,7 +25,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: om0126/2048-django-devops:latest
+          tags: om0126/cloud_app:latest
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.2.0
@@ -35,7 +34,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo docker pull om0126/2048-django-devops:latest
-            sudo docker stop 2048-app || true
-            sudo docker rm 2048-app || true
-            sudo docker run -d --name 2048-app -p 8000:8000 om0126/2048-django-devops:latest
+            sudo docker pull om0126/cloud_app:latest
+            sudo docker stop cloud_app || true
+            sudo docker rm cloud_app || true
+            sudo docker run -d --name cloud_app -p 8000:8000 om0126/cloud_app:latest
